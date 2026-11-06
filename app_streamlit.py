@@ -1,4 +1,4 @@
-"""AegisOps SecOps AutoML and Neural Arena dashboard.
+"""Adversa SecOps AutoML and Neural Arena dashboard.
 
 Redesigned with system/light/dark theme support, restrained typography,
 and WCAG AA contrast. Zero glassmorphism, zero emoji, zero gradient washes.
@@ -14,14 +14,12 @@ import streamlit as st
 
 # Configure page layout and title
 st.set_page_config(
-    page_title="AegisOps SecOps AutoML",
+    page_title="Adversa SecOps AutoML",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="auto",
 )
 
 # Initialize Session State
-if "theme_mode" not in st.session_state:
-    st.session_state.theme_mode = "Dark"
 if "privacy_masker" not in st.session_state:
     from src.security.privacy import PrivacyMasker
     st.session_state.privacy_masker = PrivacyMasker()
@@ -48,333 +46,281 @@ if "buffer_validator" not in st.session_state:
 if "verification_results" not in st.session_state:
     st.session_state.verification_results = None
 
-# Sidebar: Theme & Mode Controls
+from src.utils.providers import CUSTOM, PROVIDERS, env_names, key_from_environment, parse_env_text
+
+# Active theme. Streamlit's own Settings menu (top right) switches Light, Dark or
+# System, and this value follows it so charts, tables and CSS all stay in sync.
+def _detect_theme() -> str:
+    try:
+        kind = st.context.theme.type
+        if kind in ("light", "dark"):
+            return kind
+    except Exception:
+        pass
+    return "dark"
+
+
+active_theme = _detect_theme()
+
+# Sidebar: workspace controls
 with st.sidebar:
     st.markdown(
         """
-        <div style="padding: 4px 0 16px 0;">
-            <div style="font-size: 16px; font-weight: 600; letter-spacing: -0.01em;">AegisOps</div>
-            <div style="font-size: 13px; color: var(--text-muted, #71717A);">SecOps AutoML and neural arena</div>
+        <div class="brand">
+            <div class="brand-mark">A</div>
+            <div>
+                <div class="brand-name">Adversa</div>
+                <div class="brand-sub">Security analytics workspace</div>
+            </div>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    st.markdown("---")
-
-    # Theme selection
-    st.markdown("**Interface theme**")
-    theme_choice = st.radio(
-        "Theme",
-        options=["Dark", "Light", "System"],
-        index=0 if st.session_state.theme_mode == "Dark" else (1 if st.session_state.theme_mode == "Light" else 2),
-        label_visibility="collapsed",
-    )
-    st.session_state.theme_mode = theme_choice
-
-    # Determine active rendering theme
-    active_theme = "dark" if theme_choice in ("Dark", "System") else "light"
-
-    st.markdown("---")
-
-    # Persona mode selection
-    st.markdown("**Operational persona**")
+    st.markdown('<div class="nav-group">View</div>', unsafe_allow_html=True)
     persona_mode = st.radio(
-        "Select persona:",
+        "Persona",
         options=["SecOps action mode", "Data science deep dive mode"],
         index=0,
         label_visibility="collapsed",
-        help="SecOps mode translates raw mathematical loss and Shapley metrics into operational threat badges and firewall commands.",
+        help="SecOps mode turns loss and Shapley values into threat levels and firewall commands. Deep dive mode shows the raw metrics.",
     )
     is_secops_mode = "SecOps" in persona_mode
 
-    st.markdown("---")
-
-    # Zero-Trust Local Privacy Controls
-    st.markdown("**Zero-trust local privacy**")
+    st.markdown('<div class="nav-group">Privacy</div>', unsafe_allow_html=True)
     enable_privacy_masking = st.toggle(
-        "Mask IP and PII telemetry",
+        "Mask IPs and personal data",
         value=True,
-        help="Cryptographically substitutes internal RFC1918 IPs, MACs, and emails in-memory prior to AI analysis.",
+        help="Replaces internal IPs, MAC addresses and emails in memory before any analysis.",
     )
-
     show_demasked_view = st.toggle(
-        "Display demasked view",
+        "Show original values",
         value=False,
-        help="Restores genuine addresses strictly on your local screen for verification.",
+        help="Restores real addresses on your screen only, for verification.",
     )
 
-    st.markdown("---")
-
-    # Threat Intelligence AI Agent Key
-    st.markdown("**Threat intelligence AI agent**")
-    gemini_key_input = st.text_input(
-        "Gemini API key (optional):",
-        value=os.getenv("GEMINI_API_KEY", ""),
+    st.markdown('<div class="nav-group">Threat intelligence</div>', unsafe_allow_html=True)
+    if "api_keys_imported" not in st.session_state:
+        st.session_state.api_keys_imported = ""
+    env_file = st.file_uploader(
+        "Import keys from a .env file",
+        type=["env", "txt"],
+        help="Reads lines such as OPENAI_API_KEY=... and fills in the matching providers. Nothing is stored on disk.",
+    )
+    if env_file is not None:
+        _text = env_file.getvalue().decode("utf-8", errors="ignore")
+        _sig = f"{env_file.name}:{len(_text)}"
+        if _sig != st.session_state.api_keys_imported:
+            for _name, _val in parse_env_text(_text).items():
+                st.session_state[f"key_{_name}"] = _val
+            st.session_state.api_keys_imported = _sig
+    llm_provider = st.selectbox("Provider", options=list(PROVIDERS), index=0)
+    _cfg = PROVIDERS[llm_provider]
+    _env_key = key_from_environment(llm_provider)
+    st.session_state.setdefault(f"key_{llm_provider}", _env_key or "")
+    st.session_state.setdefault(f"model_{llm_provider}", str(_cfg["model"]))
+    llm_key = st.text_input(
+        "API key",
         type="password",
-        help="Used for generative MITRE reasoning. Leaves offline heuristic fallback active if empty.",
+        placeholder="Paste a key",
+        key=f"key_{llm_provider}",
+        help="Used for generative MITRE reasoning. The offline rule engine runs when this is empty.",
+    )
+    llm_model = st.text_input("Model", key=f"model_{llm_provider}")
+    llm_base_url = ""
+    if llm_provider == CUSTOM:
+        llm_base_url = st.text_input("Base URL", placeholder="https://your-endpoint/v1", key="base_url_custom")
+    if llm_key:
+        _where = f"from {env_names(llm_provider)[0]}" if (_env_key and llm_key == _env_key) else "set for this session"
+        st.markdown(f'<div class="key-status"><span class="dot"></span>Key {_where}</div>', unsafe_allow_html=True)
+    else:
+        st.markdown('<div class="key-status off">No key. Rules use the offline engine.</div>', unsafe_allow_html=True)
+
+    st.markdown(
+        '<div class="side-foot">Theme: open the menu at the top right, then Settings.<br>MIT License</div>',
+        unsafe_allow_html=True,
     )
 
-    st.markdown("---")
-    st.caption("AegisOps SecOps Platform • MIT License")
+PALETTES = {
+    "dark": {
+        "bg": "#0A0B0D", "panel": "#101215", "raised": "#16191D",
+        "border": "#1E2227", "border-strong": "#2C333B",
+        "text": "#ECEEF1", "muted": "#8D95A0", "dim": "#5F6772",
+        "accent": "#5B8CFF", "accent-ink": "#FFFFFF", "accent-soft": "rgba(91,140,255,0.14)",
+        "ok": "#3FB27F", "warn": "#E8A53A", "bad": "#EF5B5B",
+        "ok-soft": "rgba(63,178,127,0.12)", "warn-soft": "rgba(232,165,58,0.12)",
+        "bad-soft": "rgba(239,91,91,0.12)", "shadow": "none",
+    },
+    "light": {
+        "bg": "#F5F6F8", "panel": "#FFFFFF", "raised": "#EEF0F3",
+        "border": "#E3E6EB", "border-strong": "#CDD3DB",
+        "text": "#0F1720", "muted": "#566070", "dim": "#8892A0",
+        "accent": "#2D5BFF", "accent-ink": "#FFFFFF", "accent-soft": "rgba(45,91,255,0.09)",
+        "ok": "#148A5B", "warn": "#9A6412", "bad": "#C93434",
+        "ok-soft": "rgba(20,138,91,0.09)", "warn-soft": "rgba(154,100,18,0.10)",
+        "bad-soft": "rgba(201,52,52,0.08)", "shadow": "0 1px 2px rgba(16,24,40,0.06)",
+    },
+}
+_vars = "\n".join(f"    --{k}: {v};" for k, v in PALETTES[active_theme].items())
 
-# CSS Variables and Layout Styles (Light & Dark)
-THEME_CSS = f"""
+THEME_CSS = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap');
 
-:root {{
-    --bg-base: {'#0A0A0A' if active_theme == 'dark' else '#F7F7F8'};
-    --bg-surface: {'#141414' if active_theme == 'dark' else '#FFFFFF'};
-    --bg-elevated: {'#1E1E1E' if active_theme == 'dark' else '#EFEFEF'};
-    --border-subtle: {'#262626' if active_theme == 'dark' else '#E5E5E7'};
-    --border-strong: {'#383838' if active_theme == 'dark' else '#D4D4D8'};
-    --text-primary: {'#EDEDED' if active_theme == 'dark' else '#0A0A0A'};
-    --text-muted: {'#A1A1AA' if active_theme == 'dark' else '#52525B'};
-    --text-dim: {'#71717A' if active_theme == 'dark' else '#71717A'};
-    --accent: {'#5B9DF5' if active_theme == 'dark' else '#2F6BFF'};
-    --accent-subtle: {'rgba(91, 157, 245, 0.12)' if active_theme == 'dark' else 'rgba(47, 107, 255, 0.08)'};
-    --status-success: {'#46A758' if active_theme == 'dark' else '#16A34A'};
-    --status-warning: {'#F5A524' if active_theme == 'dark' else '#D97706'};
-    --status-danger: {'#E5484D' if active_theme == 'dark' else '#DC2626'};
-}}
+:root {
+__VARS__
+    --font: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --radius: 10px;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
 
-/* Universal Base Resets */
-html, body, .stApp {{
-    font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif !important;
-    color: var(--text-primary) !important;
-    background-color: var(--bg-base) !important;
-    -webkit-font-smoothing: antialiased;
-}}
+/* Base */
+.stApp, .stApp :where(p, span, div, label, li, td, th, h1, h2, h3, h4, h5, a, button, input, textarea, summary):not([data-testid="stIconMaterial"]) {
+    font-family: var(--font);
+}
+.stApp { background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+.stApp :where(p, li, label, span, div) { color: inherit; }
+[data-testid="stMainBlockContainer"] { max-width: 1280px; padding: 2.25rem 2.5rem 4rem; }
+h1, h2, h3, h4 { color: var(--text); letter-spacing: -0.02em; font-weight: 600; }
+h3 { font-size: 1.25rem; margin-bottom: 0.25rem; }
+h4 { font-size: 1rem; margin-top: 1.5rem; }
+[data-testid="stMarkdownContainer"] p { color: var(--muted); line-height: 1.6; max-width: 78ch; }
+[data-testid="stMarkdownContainer"] strong { color: var(--text); font-weight: 600; }
+hr { border-color: var(--border); margin: 1.5rem 0; }
+code, pre, [data-testid="stCode"] * { font-family: var(--mono); }
+[data-testid="stCode"], pre {
+    background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius);
+}
 
-/* Streamlit Header & Chrome */
-header[data-testid="stHeader"] {{
-    background-color: var(--bg-base) !important;
-    border-bottom: 1px solid var(--border-subtle) !important;
-}}
-header[data-testid="stHeader"] * {{
-    color: var(--text-primary) !important;
-}}
-[data-testid="stDecoration"] {{
-    display: none !important;
-}}
+/* Chrome */
+[data-testid="stHeader"] { background: transparent; }
+[data-testid="stDecoration"], .stAppDeployButton, [data-testid="stStatusWidget"] { display: none; }
+[data-testid="stToolbar"] * { color: var(--muted); }
 
 /* Sidebar */
-section[data-testid="stSidebar"] {{
-    background-color: var(--bg-base) !important;
-    border-right: 1px solid var(--border-subtle) !important;
-}}
-section[data-testid="stSidebar"] * {{
-    color: var(--text-primary) !important;
-}}
-section[data-testid="stSidebar"] hr {{
-    border-color: var(--border-subtle) !important;
-}}
+[data-testid="stSidebar"] { background: var(--panel); border-right: 1px solid var(--border); }
+[data-testid="stSidebar"] [data-testid="stSidebarContent"] { padding: 0.5rem 0.75rem 1.5rem; }
+[data-testid="stSidebar"] :where(p, span, label) { color: var(--text); }
+.brand { display: flex; align-items: center; gap: 12px; padding: 14px 4px 18px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+.brand-mark {
+    width: 34px; height: 34px; border-radius: 9px; background: var(--accent); color: var(--accent-ink);
+    display: grid; place-items: center; font-weight: 600; font-size: 16px; flex: none;
+}
+.brand-name { font-weight: 600; font-size: 15px; color: var(--text); letter-spacing: -0.01em; }
+.brand-sub { font-size: 12px; color: var(--muted); }
+.nav-group { font-size: 12px; font-weight: 500; color: var(--dim); margin: 22px 4px 8px; }
+.key-status { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin: -4px 2px 4px; }
+.key-status.off { color: var(--dim); }
+.side-foot { font-size: 12px; line-height: 1.6; color: var(--dim); margin: 28px 4px 0; padding-top: 14px; border-top: 1px solid var(--border); }
 
-/* Universal Heading & Paragraph Contrast */
-h1, h2, h3, h4, h5, h6,
-.stApp h1, .stApp h2, .stApp h3, .stApp h4, .stApp h5, .stApp h6,
-[data-testid="stMarkdownContainer"] h1,
-[data-testid="stMarkdownContainer"] h2,
-[data-testid="stMarkdownContainer"] h3,
-[data-testid="stMarkdownContainer"] h4,
-[data-testid="stMarkdownContainer"] h5,
-[data-testid="stMarkdownContainer"] h6 {{
-    color: var(--text-primary) !important;
-    font-weight: 600 !important;
-    letter-spacing: -0.02em !important;
-}}
+/* Radio as selectable rows */
+[data-testid="stRadio"] [role="radiogroup"] { gap: 4px; }
+[data-testid="stRadio"] label {
+    border: 1px solid transparent; border-radius: 8px; padding: 8px 10px; margin: 0;
+    transition: background-color 150ms var(--ease), border-color 150ms var(--ease);
+}
+[data-testid="stRadio"] label:hover { background: var(--raised); }
+[data-testid="stRadio"] label:has(input:checked) { background: var(--accent-soft); border-color: transparent; }
+[data-testid="stRadio"] label:has(input:checked) p { color: var(--text); font-weight: 500; }
+[data-testid="stRadio"] label p { font-size: 14px; color: var(--muted); }
 
-p, span, label,
-[data-testid="stMarkdownContainer"] p,
-[data-testid="stWidgetLabel"] label,
-[data-testid="stWidgetLabel"] span,
-[data-testid="stWidgetLabel"] p {{
-    color: var(--text-primary) !important;
-}}
+[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child { border-color: var(--border-strong); }
 
-.stCaption, [data-testid="stCaptionContainer"], [data-testid="stCaptionContainer"] * {{
-    color: var(--text-muted) !important;
-}}
+/* Page header and KPI cards */
+.page-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+.page-head .page-title { font-size: 24px !important; line-height: 30px !important; font-weight: 600 !important; letter-spacing: -0.02em; color: var(--text); margin: 0; padding: 0; }
+.page-head .page-sub { font-size: 14px; color: var(--muted); margin: 4px 0 0; max-width: none; }
+.pill {
+    display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--muted);
+    background: var(--panel); border: 1px solid var(--border); border-radius: 999px; padding: 6px 12px;
+}
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); }
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 28px; }
+.kpi { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow); }
+.kpi-label { font-size: 13px; color: var(--muted); font-weight: 500; }
+.kpi-value { font-size: 26px; line-height: 34px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); font-variant-numeric: tabular-nums; margin-top: 6px; }
+.kpi-value.empty { color: var(--dim); }
+.kpi-meta { font-size: 12px; color: var(--dim); margin-top: 2px; }
+@media (max-width: 900px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } [data-testid="stMainBlockContainer"] { padding: 1.5rem 1rem 3rem; } }
 
-/* Surface Card */
-.surface-card {{
-    background-color: var(--bg-surface) !important;
-    border: 1px solid var(--border-subtle) !important;
-    border-radius: 6px !important;
-    padding: 16px 20px !important;
-    margin-bottom: 16px !important;
-}}
+/* Existing panels */
+.surface-card, .centerpiece-card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 16px 20px; margin-bottom: 16px; box-shadow: var(--shadow);
+}
+.centerpiece-card { padding: 22px 24px; border-color: var(--border-strong); }
+.centerpiece-metric { font-size: 44px; line-height: 48px; font-weight: 600; letter-spacing: -0.03em; color: var(--text); font-variant-numeric: tabular-nums; margin: 6px 0; }
+.metric-num { font-size: 22px; line-height: 28px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); font-variant-numeric: tabular-nums; }
+.metric-meta { font-size: 13px; line-height: 18px; color: var(--muted); font-weight: 500; }
+.slim-progress-track { width: 100%; height: 6px; background: var(--raised); border-radius: 999px; overflow: hidden; margin-top: 14px; }
+.slim-progress-fill { height: 100%; background: var(--accent); border-radius: 999px; }
 
-/* Highlight Centerpiece (Evasion Resistance & Leaderboard) */
-.centerpiece-card {{
-    background-color: var(--bg-surface) !important;
-    border: 1px solid var(--border-strong) !important;
-    border-radius: 6px !important;
-    padding: 24px !important;
-    margin-bottom: 24px !important;
-}}
+/* Tabs as a segmented control */
+[role="tablist"] {
+    gap: 2px; background: var(--raised); padding: 4px; border-radius: 12px; border: 1px solid var(--border);
+    width: fit-content; max-width: 100%; overflow-x: auto; box-shadow: none;
+}
+[role="tablist"] [data-baseweb="tab-highlight"], [role="tablist"] [data-baseweb="tab-border"],
+[data-testid="stTabHighlight"], [data-testid="stTabBorder"] { display: none !important; }
+[role="tablist"] [role="tab"] {
+    height: 36px; padding: 0 14px; border-radius: 9px; background: transparent !important; color: var(--muted);
+    font-size: 14px; font-weight: 500; border: none !important; box-shadow: none;
+    transition: background-color 150ms var(--ease), color 150ms var(--ease);
+}
+[role="tablist"] [role="tab"] p { color: inherit; font-size: 14px; font-weight: 500; max-width: none; }
+[role="tablist"] [role="tab"]:hover { color: var(--text); }
+[role="tablist"] [role="tab"][aria-selected="true"] { background: var(--panel) !important; color: var(--text); box-shadow: 0 0 0 1px var(--border-strong) !important; }
+[role="tablist"] [role="tab"]::before, [role="tablist"] [role="tab"]::after { display: none !important; content: none !important; }
+[role="tabpanel"] { padding-top: 1.75rem; }
 
-.centerpiece-metric {{
-    font-size: 40px !important;
-    line-height: 44px !important;
-    font-weight: 600 !important;
-    letter-spacing: -0.025em !important;
-    font-family: 'Geist Mono', monospace !important;
-    font-variant-numeric: tabular-nums !important;
-    color: var(--text-primary) !important;
-    margin: 8px 0 !important;
-}}
+/* Buttons */
+.stApp .stButton > button, .stApp button[data-testid="stBaseButton-secondary"], .stApp button[data-testid="stBaseButton-primary"] {
+    background: var(--accent) !important; color: var(--accent-ink) !important; border: 1px solid transparent !important;
+    border-radius: 8px; font-size: 14px; font-weight: 500; min-height: 40px; padding: 0 16px; box-shadow: none !important;
+    transition: filter 150ms var(--ease);
+}
+.stApp .stButton > button p { color: var(--accent-ink) !important; font-weight: 500; max-width: none; }
+.stApp .stButton > button:hover { filter: brightness(1.1); }
+.stApp .stButton > button:focus:not(:focus-visible) { outline: none; box-shadow: none !important; }
+.stApp .stButton > button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-.slim-progress-track {{
-    width: 100% !important;
-    height: 4px !important;
-    background-color: var(--border-subtle) !important;
-    border-radius: 2px !important;
-    overflow: hidden !important;
-    margin-top: 12px !important;
-}}
+/* Inputs */
+[data-baseweb="input"], [data-baseweb="base-input"], [data-baseweb="select"] > div, textarea {
+    background: var(--panel); border-color: var(--border-strong); border-radius: 8px; color: var(--text);
+}
+[data-baseweb="input"]:focus-within, [data-baseweb="select"] > div:focus-within { border-color: var(--accent); }
+[data-testid="stWidgetLabel"] p { font-size: 13px; font-weight: 500; color: var(--muted); }
+[data-testid="stSlider"] [role="slider"] { background: var(--accent); }
 
-.slim-progress-fill {{
-    height: 100% !important;
-    background-color: var(--accent) !important;
-    border-radius: 2px !important;
-}}
+/* Upload zone */
+[data-testid="stFileUploader"] section {
+    background: var(--panel); border: 1px dashed var(--border-strong); border-radius: var(--radius); padding: 22px;
+    transition: border-color 150ms var(--ease), background-color 150ms var(--ease);
+}
+[data-testid="stFileUploader"] section:hover { border-color: var(--accent); background: var(--accent-soft); }
+.stApp [data-testid="stFileUploader"] section button, .stApp [data-testid="stFileUploader"] section button p { background: var(--raised) !important; color: var(--text) !important; border: 1px solid var(--border-strong) !important; }
+[data-testid="stFileUploaderFile"] { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; margin-top: 8px; }
+[data-testid="stFileUploaderFile"] [data-testid="stFileUploaderFileIcon"],
+[data-testid="stFileUploaderFile"] svg:first-child { display: none; }
 
-/* Typography styles */
-.metric-num {{
-    font-size: 24px !important;
-    line-height: 28px !important;
-    font-weight: 600 !important;
-    letter-spacing: -0.02em !important;
-    font-family: 'Geist Mono', monospace !important;
-    font-variant-numeric: tabular-nums !important;
-    color: var(--text-primary) !important;
-}}
+/* Alerts, tinted by meaning */
+[data-testid="stAlert"] { border-radius: var(--radius); border: 1px solid var(--border); background: var(--panel); padding: 4px 6px; }
+[data-testid="stAlert"] *, [data-testid="stAlert"] [data-testid="stMarkdownContainer"] p { color: var(--text) !important; }
+[data-testid="stAlertContainer"], [data-testid="stAlert"] [class*="stAlertContent"] { background: transparent !important; border: none !important; }
+[data-testid="stAlert"]:has([data-testid="stAlertContentSuccess"]) { background: var(--ok-soft); border-color: color-mix(in srgb, var(--ok) 35%, transparent); }
+[data-testid="stAlert"]:has([data-testid="stAlertContentWarning"]) { background: var(--warn-soft); border-color: color-mix(in srgb, var(--warn) 40%, transparent); }
+[data-testid="stAlert"]:has([data-testid="stAlertContentError"]) { background: var(--bad-soft); border-color: color-mix(in srgb, var(--bad) 40%, transparent); }
+[data-testid="stAlert"]:has([data-testid="stAlertContentInfo"]) { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 35%, transparent); }
 
-.metric-meta {{
-    font-size: 13px !important;
-    line-height: 16px !important;
-    color: var(--text-muted) !important;
-    font-weight: 500 !important;
-}}
+/* Tables and charts sit on panels */
+[data-testid="stDataFrame"] { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+[data-testid="stPlotlyChart"] { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--panel); }
+[data-testid="stExpander"] { border: 1px solid var(--border); border-radius: var(--radius); background: var(--panel); }
 
-/* File Uploader styling */
-[data-testid="stFileUploader"],
-[data-testid="stFileUploader"] section,
-[data-testid="stFileUploaderDropzone"],
-[data-testid="stFileUploader"] [data-testid="stFileUploaderDropzone"] {{
-    background-color: var(--bg-surface) !important;
-    border: 1px dashed var(--border-strong) !important;
-    border-radius: 6px !important;
-    color: var(--text-primary) !important;
-}}
-
-[data-testid="stFileUploader"] section * {{
-    color: var(--text-primary) !important;
-}}
-
-[data-testid="stFileUploader"] button {{
-    background-color: var(--bg-elevated) !important;
-    border: 1px solid var(--border-subtle) !important;
-    color: var(--text-primary) !important;
-    border-radius: 4px !important;
-}}
-
-/* Form Controls & Inputs */
-input, textarea, select, [data-baseweb="input"] {{
-    background-color: var(--bg-surface) !important;
-    color: var(--text-primary) !important;
-    border-color: var(--border-subtle) !important;
-}}
-
-/* Alerts / Banners */
-div[data-testid="stAlert"] {{
-    background-color: var(--bg-surface) !important;
-    border: 1px solid var(--border-subtle) !important;
-    border-left: 3px solid var(--accent) !important;
-    color: var(--text-primary) !important;
-    border-radius: 6px !important;
-}}
-
-div[data-testid="stAlert"] * {{
-    color: var(--text-primary) !important;
-}}
-
-/* Radio and Checkbox controls */
-[data-testid="stRadio"] label,
-[data-testid="stCheckbox"] label {{
-    color: var(--text-primary) !important;
-}}
-
-/* Code & Telemetry */
-code, pre {{
-    font-family: 'Geist Mono', monospace !important;
-    background-color: var(--bg-elevated) !important;
-    color: var(--text-primary) !important;
-    border: 1px solid var(--border-subtle) !important;
-    border-radius: 4px !important;
-}}
-
-/* Clean Tabs */
-.stTabs [data-baseweb="tab-list"] {{
-    gap: 8px !important;
-    background: transparent !important;
-    border-bottom: 1px solid var(--border-subtle) !important;
-    padding: 0 !important;
-}}
-
-.stTabs [data-baseweb="tab"] {{
-    border-radius: 0 !important;
-    color: var(--text-muted) !important;
-    font-weight: 500 !important;
-    font-size: 14px !important;
-    padding: 10px 16px !important;
-    background: transparent !important;
-}}
-
-.stTabs [data-baseweb="tab"]:hover {{
-    color: var(--text-primary) !important;
-}}
-
-.stTabs [aria-selected="true"] {{
-    color: var(--text-primary) !important;
-    border-bottom: 2px solid var(--accent) !important;
-}}
-
-/* Buttons: sentence case, primary action uses confident blue */
-.stButton > button {{
-    background-color: var(--accent) !important;
-    color: #FFFFFF !important;
-    font-weight: 500 !important;
-    font-size: 14px !important;
-    border: 1px solid transparent !important;
-    border-radius: 6px !important;
-    padding: 8px 16px !important;
-    transition: opacity 150ms cubic-bezier(0.22, 1, 0.36, 1) !important;
-}}
-.stButton > button:hover {{
-    opacity: 0.90 !important;
-    color: #FFFFFF !important;
-}}
-.stButton > button:focus-visible {{
-    outline: 2px solid var(--accent) !important;
-    outline-offset: 2px !important;
-}}
-
-/* Dividers */
-hr {{
-    border-color: var(--border-subtle) !important;
-}}
-
-@media (prefers-reduced-motion: reduce) {{
-    * {{
-        transition: none !important;
-        animation: none !important;
-    }}
-}}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
-"""
+""".replace("__VARS__", _vars)
 st.markdown(THEME_CSS, unsafe_allow_html=True)
 
 # Imports from src
@@ -404,28 +350,59 @@ from src.utils.translations import (
 )
 from src.utils.verifier import run_all_verifications
 
-# Header Section (Sentence case, clean, no gradient text)
+# Page header and live KPI cards
 st.markdown(
     """
-    <div style="margin-bottom: 24px;">
-        <h1 style="color: var(--text-primary); font-size: 28px; line-height: 32px; font-weight: 600; letter-spacing: -0.02em; margin: 0 0 6px 0;">
-            AegisOps: Adversarial-resistant SecOps AutoML and neural arena
-        </h1>
-        <p style="margin: 0; font-size: 14px; color: var(--text-muted); line-height: 20px;">
-            In-memory explainable threat detection, invariant verification, and automated rule synthesis
-        </p>
+    <div class="page-head">
+        <div>
+            <div class="page-title">Threat detection workspace</div>
+            <p class="page-sub">Train, stress-test and explain models on security telemetry, then export defensive rules.</p>
+        </div>
+        <span class="pill"><span class="dot"></span>All data stays in memory</span>
     </div>
     """,
     unsafe_allow_html=True,
 )
+def _kpi(label: str, value: Optional[str], meta: str) -> str:
+    cls = "kpi-value" if value else "kpi-value empty"
+    return (
+        f'<div class="kpi"><div class="kpi-label">{label}</div>'
+        f'<div class="{cls}">{value if value else "&mdash;"}</div>'
+        f'<div class="kpi-meta">{meta}</div></div>'
+    )
 
-# Main Navigation Tabs (Sentence case, no emoji)
+
+def render_kpis() -> None:
+    raw = st.session_state.raw_df
+    arena = st.session_state.arena_result
+    adv = st.session_state.adv_results
+    rows = f"{len(raw):,}" if raw is not None else None
+    cols = f"{len(raw.columns):,}" if raw is not None else None
+    model = getattr(arena, "winning_model_name", None) if arena is not None else None
+    score = None
+    if isinstance(adv, dict) and "evasion_resistance_score" in adv:
+        score = f"{adv['evasion_resistance_score']:.1f}%"
+    kpi_slot.markdown(
+        f"""
+        <div class="kpis">
+            {_kpi("Records loaded", rows, "In this session" if rows else "Load a file or a sample to start")}
+            {_kpi("Features", cols, "Columns before cleaning" if cols else "Appear after loading data")}
+            {_kpi("Best model", model, "Winner of the arena benchmark" if model else "Run the arena benchmark")}
+            {_kpi("Evasion resistance", score, "Higher is harder to evade" if score else "Runs after the benchmark")}
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+kpi_slot = st.empty()
+
+# Main navigation
 tab_ingest, tab_arena, tab_adv_xai, tab_mitre, tab_verify = st.tabs([
-    "Ingestion and privacy vault",
-    "AutoML and neural arena",
-    "Adversarial and XAI diagnostics",
-    "MITRE ATT&CK and rule generator",
-    "System verification and tests",
+    "Ingestion and privacy",
+    "Model arena",
+    "Robustness and explanations",
+    "MITRE and rules",
+    "Verification",
 ])
 
 
@@ -570,9 +547,40 @@ with tab_ingest:
                 st.session_state.cleaning_report = report
                 st.rerun()
 
-        if st.session_state.cleaning_report is not None:
+        if st.session_state.cleaning_report is not None and st.session_state.cleaned_df is not None:
             rep = st.session_state.cleaning_report
             st.info(rep["plain_english_summary"])
+
+            # Cleaned dataset in-memory export options
+            export_df = st.session_state.cleaned_df.copy()
+            is_demasked = show_demasked_view
+            if is_demasked:
+                export_rows = [st.session_state.privacy_masker.demask_dict(r) for r in export_df.to_dict(orient="records")]
+                export_df = pd.DataFrame(export_rows)
+
+            csv_bytes = export_df.to_csv(index=False).encode("utf-8")
+            json_bytes = export_df.to_json(orient="records", indent=2).encode("utf-8")
+
+            export_info_col, dl_csv_col, dl_json_col = st.columns([2, 1, 1])
+            with export_info_col:
+                privacy_state_label = "Demasked / Real Entities" if is_demasked else "Zero-Trust Masked (GDPR Safe)"
+                st.caption(f"Cleaned dataset: {len(export_df):,} records × {len(export_df.columns)} features • {privacy_state_label}")
+            with dl_csv_col:
+                st.download_button(
+                    label="Download cleaned CSV",
+                    data=csv_bytes,
+                    file_name="cleaned_telemetry_masked.csv" if not is_demasked else "cleaned_telemetry_demasked.csv",
+                    mime="text/csv",
+                    use_container_width=True,
+                )
+            with dl_json_col:
+                st.download_button(
+                    label="Download cleaned JSON",
+                    data=json_bytes,
+                    file_name="cleaned_telemetry_masked.json" if not is_demasked else "cleaned_telemetry_demasked.json",
+                    mime="application/json",
+                    use_container_width=True,
+                )
 
         preview_df = st.session_state.cleaned_df if st.session_state.cleaned_df is not None else active_df
         st.markdown("#### Telemetry preview")
@@ -855,7 +863,10 @@ with tab_mitre:
                     top_features=top_feats,
                     anomalies_sample=anomalies_sample,
                     robustness_metrics=st.session_state.adv_results,
-                    api_key=gemini_key_input,
+                    api_key=llm_key,
+                    provider=llm_provider,
+                    model=llm_model,
+                    base_url=llm_base_url,
                 )
                 st.session_state.mitre_results = rules_out
 
@@ -1025,3 +1036,7 @@ with tab_verify:
                     """,
                     unsafe_allow_html=True,
                 )
+
+
+# Refresh the KPI cards with whatever this run produced
+render_kpis()
