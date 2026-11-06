@@ -43,6 +43,7 @@ htmlcov/
 .ruff_cache/
 
 # IDE and OS files
+*.zip
 .DS_Store
 .idea/
 .vscode/

@@ -86,6 +86,48 @@
 
 ---
 
+## 📊 Datasets & Public Origins
+
+Adversa comes pre-configured with 5 cybersecurity telemetry datasets located in `data/samples/` (and reproducibly generated via `generate_samples.py`), modeled after standard public benchmarks:
+
+1. **Phishing Email & URL Telemetry (`phishing_data.csv`)**:
+   - *Origin / Source*: Modeled after the **UCI Machine Learning Repository Phishing Websites Dataset** and **Kaggle Phishing Email Classification Dataset**.
+   - *Features*: URL length, subdomain depth, entropy, IP in URL, SSL age, suspicious keywords, and target threat label.
+   - *Task*: Supervised classification.
+2. **Network Firewall Logs (`firewall_logs.json`)**:
+   - *Origin / Source*: Modeled after the **Kaggle Internet Firewall Data (UCI)** and Palo Alto firewall telemetry logs.
+   - *Features*: Source/destination IP, port, action (ALLOW/DENY), bytes sent/received, packet rate, duration.
+   - *Task*: Unsupervised anomaly detection & classification.
+3. **Authentication & SSH Syslog Records (`auth_syslog.log`)**:
+   - *Origin / Source*: Modeled after **SecRepo Linux Auth & Syslog RFC 3164/5424** intrusion log benchmarks.
+   - *Features*: Timestamp, hostname, PID, raw syslog message, source IP, action.
+   - *Task*: Unsupervised zero-day outlier detection with high-cardinality log parsing.
+4. **Network Packet Capture (`network_traffic.pcap`)**:
+   - *Origin / Source*: Synthesized binary PCAP network flows adhering to **Wireshark / Libpcap** packet specifications.
+   - *Features*: Ethernet frame, IP packet header, TCP/UDP ports, payload byte entropy, flags.
+   - *Task*: Binary protocol inspection and network intrusion classification.
+5. **Security Data Lake Flows (`security_telemetry.parquet`)**:
+   - *Origin / Source*: Apache Parquet columnar data lake telemetry based on **AWS VPC Flow Logs**.
+   - *Features*: Flow index, duration, bytes, packet count, protocol, TCP flags.
+   - *Task*: High-throughput columnar security stream analysis.
+
+---
+
+## 💡 What I Learned (Reflective AI Engineering Takeaways)
+
+Working with an AI coding assistant (Google Antigravity) to architect and deploy a production-ready application provided several fundamental insights:
+
+1. **Iterative Problem Specification beats Generic Prompts**:
+   - Giving the AI specific architectural constraints (e.g. `io.BytesIO` RAM-only buffers, RFC 1918 HMAC masking, 128 max features in `float32`) prevented fragile solutions and ensured security by design.
+2. **Never Accept AI Output Blindly (The `ArrayMemoryError` Lesson)**:
+   - When ingesting raw syslog files, the AI initially used standard `pd.get_dummies()`. For high-cardinality text (UUIDs, timestamps, raw messages), this attempted to allocate 106 Terabytes of RAM, crashing NumPy. Reviewing the stack trace and guiding the AI to extract structural signals (`_len` and `_digits`) and apply top-15 category binning eliminated the memory spike entirely.
+3. **Design System & Contrast Rigor**:
+   - Initial AI-generated light themes suffered from faint headings and white text inside inputs. Enforcing explicit CSS variables, `-webkit-text-fill-color`, and WCAG AA contrast standards transformed the UI into a clean, modern analytics workspace.
+4. **Air-Gapped Reliability with Heuristic Fallbacks**:
+   - Relying solely on cloud LLM APIs makes security software brittle. Implementing deterministic offline heuristic fallbacks guaranteed 100% operational readiness even without internet connectivity or API keys.
+
+---
+
 ## Quickstart & Local Installation
 
 ### Prerequisites
@@ -95,8 +137,8 @@
 ### 1. Clone & Set Up Virtual Environment
 
 ```bash
-git clone https://github.com/your-username/cyber-automl-arena.git
-cd cyber-automl-arena
+git clone https://github.com/srivatsa108/Adversarial-Resistant-SecOps-AutoML-Neural-Arena.git
+cd Adversarial-Resistant-SecOps-AutoML-Neural-Arena
 
 python3 -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
@@ -113,7 +155,7 @@ pip install -r requirements.txt
 
 ```bash
 cp .env.example .env
-# Edit .env to add your GEMINI_API_KEY if desired (Optional)
+# Edit .env to add your threat intelligence API key if desired (Optional)
 ```
 
 ### 4. Generate Built-in Sample Datasets
@@ -121,13 +163,12 @@ cp .env.example .env
 ```bash
 python generate_samples.py
 ```
-*Generates messy `phishing_data.csv` (supervised) and `firewall_logs.json` (unsupervised) in `data/samples/`.*
 
 ---
 
 ## 🖥️ Running the Platform
 
-### Option A: Modern Streamlit Dashboard (SecOps Dark Mode)
+### Option A: Modern Streamlit Dashboard (Dark & Light Theme)
 
 ```bash
 streamlit run app_streamlit.py
@@ -137,9 +178,15 @@ Open [http://localhost:8501](http://localhost:8501) in your browser.
 ### Option B: Decoupled FastAPI Backend
 
 ```bash
-uvicorn app_fastapi.py --host 0.0.0.0 --port 8000 --reload
+uvicorn app_fastapi:app --host 0.0.0.0 --port 8000 --reload
 ```
 Interactive Swagger/OpenAPI documentation is available at [http://localhost:8000/docs](http://localhost:8000/docs).
+
+### Option C: Run Full Automated Verification Suite
+
+```bash
+PYTHONPATH=. pytest tests/ -v
+```
 
 ---
 
