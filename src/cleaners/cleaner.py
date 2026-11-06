@@ -228,23 +228,69 @@ class DataCleaner(BaseDataCleaner):
         X: pd.DataFrame,
         fit_scaler: bool = True,
         scaler: Optional[StandardScaler] = None,
+        max_categories_per_col: int = 15,
+        max_total_features: int = 128,
     ) -> Tuple[np.ndarray, List[str], StandardScaler]:
         """Preprocess feature DataFrame for Neural Network and ML readiness.
 
-        Applies one-hot encoding to categorical features and StandardScaler to numeric features.
+        Safely handles high-cardinality text/logs and categorical features without
+        memory exhaustion (ArrayMemoryError) by using frequency binning, string-length
+        feature extraction, and float32 memory bounds.
 
         Returns:
             Tuple of (scaled feature matrix np.ndarray, feature names list, fitted StandardScaler).
         """
-        # Convert categorical/object to dummy variables
-        X_encoded = pd.get_dummies(X, drop_first=True, dtype=float)
+        if X.empty:
+            fitted_scaler = StandardScaler() if scaler is None else scaler
+            return np.zeros((0, 1), dtype=np.float32), ["dummy_feature"], fitted_scaler
+
+        processed_parts: List[pd.DataFrame] = []
+        n_rows = len(X)
+
+        for col in X.columns:
+            s = X[col]
+            if pd.api.types.is_numeric_dtype(s):
+                med = float(s.median()) if not s.dropna().empty else 0.0
+                num_series = s.fillna(med).astype(np.float32)
+                processed_parts.append(num_series.to_frame(name=col))
+            else:
+                n_unique = s.nunique()
+                cardinality_ratio = (n_unique / n_rows) if n_rows > 0 else 0.0
+
+                # High-cardinality text, raw logs, UUIDs, or timestamps (>30 unique or >15% of dataset)
+                if n_unique > 30 or cardinality_ratio > 0.15:
+                    str_s = s.astype(str)
+                    len_feature = str_s.str.len().astype(np.float32).to_frame(name=f"{col}_len")
+                    digit_feature = str_s.str.count(r"\d").astype(np.float32).to_frame(name=f"{col}_digits")
+                    processed_parts.extend([len_feature, digit_feature])
+                else:
+                    # Low-to-medium cardinality: keep top N categories + 'OTHER'
+                    top_cats = s.value_counts().nlargest(max_categories_per_col).index
+                    binned_s = s.where(s.isin(top_cats), other="OTHER")
+                    dummies = pd.get_dummies(binned_s, prefix=col, drop_first=True, dtype=np.float32)
+                    if not dummies.empty:
+                        processed_parts.append(dummies)
+
+        if not processed_parts:
+            # Fallback if no valid features extracted
+            X_encoded = pd.DataFrame({"constant_bias": np.ones(n_rows, dtype=np.float32)})
+        else:
+            X_encoded = pd.concat(processed_parts, axis=1)
+
+        # Cap total features to safe memory bound
+        if X_encoded.shape[1] > max_total_features:
+            variances = X_encoded.var().sort_values(ascending=False)
+            top_cols = variances.head(max_total_features).index
+            X_encoded = X_encoded[top_cols]
+
         feature_names = list(X_encoded.columns)
+        X_values = X_encoded.values.astype(np.float32)
 
         if fit_scaler or scaler is None:
-            fitted_scaler = StandardScaler()
-            X_scaled = fitted_scaler.fit_transform(X_encoded.values)
+            fitted_scaler = StandardScaler(copy=False)
+            X_scaled = fitted_scaler.fit_transform(X_values)
         else:
             fitted_scaler = scaler
-            X_scaled = fitted_scaler.transform(X_encoded.values)
+            X_scaled = fitted_scaler.transform(X_values)
 
-        return X_scaled, feature_names, fitted_scaler
+        return X_scaled.astype(np.float32), feature_names, fitted_scaler
