@@ -147,7 +147,7 @@ with st.sidebar:
         st.markdown('<div class="key-status off">No key. Rules use the offline engine.</div>', unsafe_allow_html=True)
 
     st.markdown(
-        '<div class="side-foot">Adversa SecOps Telemetry<br>MIT License</div>',
+        '<div class="side-foot">Adversa SecOps Telemetry<br>In-Memory Pipeline · v2.4</div>',
         unsafe_allow_html=True,
     )
 
