@@ -1,46 +1,78 @@
-# Task: Redesign the UI of Antigravity SecOps AutoML with light and dark themes
+# Adversa: Master Engineering Prompt (Final Iteration)
 
-## Context
-This repo is a Python security-ML platform. The UI has two parts:
-- `app_streamlit.py` is the main dashboard (Streamlit), with helpers in `src/utils/plotting.py` (Plotly charts) and `src/utils/translations.py` (severity badges).
-- `landing/index.html` is the static landing page.
+Build, optimize, and deploy "Adversa": a modular, production-ready, open-source Adversarial-Resistant, Explainable Automated Machine Learning (AutoML) & Deep Neural Network cybersecurity telemetry platform.
 
-Users are SOC analysts (default "SecOps action" mode) and data scientists ("Data science deep dive" mode). The interface should feel like a precise, calm professional tool, not a template.
+Target GitHub Repository:
+https://github.com/srivatsa108/Adversarial-Resistant-SecOps-AutoML-Neural-Arena
 
-## What to build
-1. **Two complete themes, light and dark.**
-   - Define all colours as CSS variables on `:root` and override them for dark mode. No hard-coded hex values inside components.
-   - Default to the user's system setting (`prefers-color-scheme`). Add a theme switch (System / Light / Dark) in the Streamlit sidebar and in the landing page header, and remember the choice for the session (`st.session_state` in Streamlit, `localStorage` in a try/catch on the landing page).
-   - Both themes must meet WCAG AA contrast (4.5:1 for body text, 3:1 for large text and UI borders).
-   - Plotly charts, dataframes, code blocks and severity badges must follow the active theme. Build one theme-aware Plotly layout function that takes the theme name; do not leave dark-only colours in `plotting.py`.
-2. **A more stylish, distinctive look, still restrained.**
-   - Dark: true black base, raised surfaces one step lighter, thin 1 px borders.
-   - Light: cool near-white base (`#F7F7F8`), white surfaces, ink text (`#0A0A0A`), same border logic. Avoid cream and terracotta palettes.
-   - One accent colour only (a confident blue, for example `#2F6BFF` light and `#5B9DF5` dark), used for the primary action, focus rings and the selected tab. Status colours (green, amber, red) are used only to show state.
-   - Type: Geist for text, Geist Mono for IPs, rule code, hashes and numbers in tables. Use a clear scale (12, 14, 16, 20, 28, 40), weights 400/500/600 only, tight letter-spacing on headings, tabular numerals for metrics.
-   - Layout: generous spacing on a 4/8 px grid, content width capped around 1120 px on the landing page, left-aligned text, line length under 80 characters.
-   - Make one thing memorable: the Evasion Resistance Score and the model leaderboard should be the visual centre of the dashboard (large, clean, well-spaced figures with a slim progress bar), with everything else quiet.
-   - Depth comes from borders and surface steps first, with at most one soft shadow on floating elements (menus, toasts). No glassmorphism, no glow, no gradient text or washes, no emoji, no decorative icons, no all-caps eyebrow labels, no arrows appended to button text.
-3. **Motion.** Only motion that responds to a click (tab change, expand, theme switch at 150 to 200 ms). Animate only opacity and colour. Honour `prefers-reduced-motion`. No scroll-reveal or hover-lift effects.
-4. **Copy.** Sentence case. Buttons start with a verb ("Clean dataset", "Run benchmark", "Generate rules"). Errors say what happened and how to fix it, and never blame the user. Empty states say what to do next, with one button.
-5. **Keep behaviour intact.** Do not change model, parsing, privacy-masking, SHAP or rule-generation logic. Keep all function names and return keys used by the app (for example `badge_html`, `icon`, `plain_english_summary`).
+================================================================================
+1. BRAND IDENTITY & MODERN ANALYTICS DESIGN SYSTEM
+================================================================================
+- Platform Name: "Adversa" (strictly zero mention of "Antigravity").
+- Design Aesthetic: High-density, engineering-grade SecOps analytics dashboard inspired by Linear, Vercel, and Datadog.
+- Palette & Theming:
+  * Native dual-theme engine supporting seamless Dark mode and Light mode toggling via an instant segmented control at the top of the sidebar.
+  * Light Mode Palette: Background #F6F8FA, panel/card #FFFFFF, raised hover #EFF1F4, border #E1E4E8, strong border #CFD3D8, primary text #111827 (slate-900, >14:1 contrast ratio), muted text #4B5563 (>6.5:1 ratio), primary accent #2563EB, success #059669, warning #D97706, error #DC2626.
+  * Dark Mode Palette: Background #0A0B0D, panel #101215, raised #16191D, border #1E2227, strong border #2C333B, text #ECEEF1, muted #8D95A0, accent #5B8CFF, success #3FB27F, warning #E8A53A, error #EF5B5B.
+  * Strict WCAG AAA/AA compliance across all typography, form inputs (-webkit-text-fill-color enabled to prevent faint text in WebKit/Chrome), buttons, tables, alerts, and Plotly charts.
+  * Visual Restraint: 10px rounded card containers with 1px border dividers, subtle box shadows, monospace tabular numerals, single-metric KPI strip populated dynamically via st.empty(), segmented tab controls. Clean enterprise workspace footer ("Adversa SecOps Telemetry · In-Memory Pipeline · v2.4"). Strictly zero emoji, zero glowing borders, zero glassmorphism, zero animated floating particles, and zero open-source license clutter in the UI.
 
-## Responsive and accessibility floor
-- Works from 375 px to 1440 px with no horizontal page scroll; tables scroll inside their own container.
-- Visible keyboard focus on every interactive element, logical tab order, labels on all inputs, touch targets at least 40 px.
-- Landing page: semantic landmarks, a skip link, and a sensible `<title>` and meta description.
+================================================================================
+2. GENERALIZED MULTI-FORMAT INGESTION & DATA LAKE ENGINE
+================================================================================
+- Extensible ParserFactory supporting unified in-memory parsing across 11+ telemetry formats:
+  * Delimited text: CSV, TSV (RFC 4180).
+  * Structured data: JSON arrays, JSONL / NDJSON streaming lines.
+  * Unstructured security logs: Syslog (RFC 3164 / RFC 5424), Common Event Format (CEF), and Key-Value firewall logs with automatic header and kv-pair extraction.
+  * Binary captures: PCAP and PCAPNG network packet captures (parsing Ethernet, IP, TCP, UDP, ICMP headers, sequence flags, TTL, and payload entropy).
+  * Data lakes: Columnar Apache Parquet files (.parquet).
+  * Document intelligence: PDF security reports with table and metadata extraction.
+- Ingestion Safety: Magic-byte file signature validation (PAR1, PCAP microsecond/nanosecond headers, %PDF-), rejecting spoofed extensions before buffer processing.
+- Quota: 1 GB in-memory quota ceiling configured across Streamlit and backend validators.
 
-## Files to change
-`app_streamlit.py`, `src/utils/plotting.py`, `src/utils/translations.py`, `landing/index.html`, and `.streamlit/config.toml` (so Streamlit's own widgets follow the theme). Put shared tokens in one place and reuse them.
+================================================================================
+3. ZERO-TRUST SECURITY, PRIVACY & IN-MEMORY ARCHITECTURE
+================================================================================
+- RAM-Only Lifecycle: Zero unencrypted temporary disk writes (`io.BytesIO` exclusively throughout upload, parsing, cleaning, feature engineering, and inference).
+- Zero-Trust Cryptographic Privacy Masking:
+  * RFC 1918 cryptographic pseudonymization (`PrivacyMasker`) replacing internal IPv4 addresses, IPv6, MAC addresses, and corporate email addresses with deterministic keyed HMAC hashes.
+  * Local Client-Side Demasking: HMAC secret keys remain resident in local session memory, enabling analysts to toggle ephemeral client-side verification views without exposing raw PII upstream.
+- Injection Neutralization: Sanitize scalar strings to neutralize spreadsheet formula injection (=, +, -, @, \t, \r) and strip XSS scripts before data rendering.
+- In-Memory Dataset Export: Direct client-side downloads of sanitized, masked, and cleaned datasets in both CSV and JSON formats generated on the fly via `io.StringIO`.
 
-## How to work
-1. Read the files above and list the current colour, type and component inventory.
-2. Propose the token set (colours for both themes, type scale, spacing, radii) in a short table before writing code.
-3. Implement, then run `python -m py_compile` on the Python files and `PYTHONPATH=. pytest tests/ -v`.
-4. Run `streamlit run app_streamlit.py` and the landing page, and check every tab in both themes at 375 px and 1440 px. Screenshot each and fix anything with low contrast, overflow or mismatched chart colours.
-5. Finish with a short summary of what changed and anything you could not verify.
+================================================================================
+4. PERFORMANCE ACCELERATION & MEMORY SAFETY (OOM PREVENTION)
+================================================================================
+- Cardinality-Aware Feature Partitioning:
+  * Intelligent detection of high-cardinality text, raw syslog strings, hashes, UUIDs, and timestamps (columns where unique values > 30 or cardinality ratio > 15%).
+  * Convert high-cardinality columns into structural numerical features (`_len` and `_digits`), completely replacing unbounded `pd.get_dummies()` and permanently eliminating `numpy._core._exceptions._ArrayMemoryError`.
+  * Frequency-bin low-to-medium categorical columns into the top 15 most frequent categories, grouping all remaining infrequent entries into "OTHER".
+  * Cap total one-hot encoded feature matrix at 128 highest-variance columns.
+  * Strict `np.float32` matrix allocation throughout StandardScaler and neural network loaders (cutting memory footprint by 50%).
+- Vectorized Privacy Masking:
+  * Unique-value caching with `Series.map()` replacing cell-by-cell regex operations, achieving a 25x–100x masking speedup on large dataframes.
+- Session-Level Cache Guards:
+  * Hash-keyed Streamlit caching preventing redundant privacy re-masking on unrelated widget reruns.
+- Sub-Second Diagnostics:
+  * SHAP TreeExplainer / KernelExplainer bounded to a representative 100-row sample.
+  * Adversarial robustness perturbations (FGSM / PGD / boundary noise) evaluated across 300 test instances across 7 perturbation steps (ε = 0.0 to 0.3).
 
-## Definition of done
-- Switching theme changes every surface, chart, table and badge with no leftover dark or light patches.
-- No emoji, glow, glass blur or gradient text anywhere in the app, charts or landing page.
-- Tests pass and the dashboard runs without errors.
+================================================================================
+5. ADAPTIVE AUTOML & NEURAL ARENA
+================================================================================
+- Dual-Engine Task Determination:
+  * Supervised Classification & Regression: Auto-trains and benchmarks Logistic Regression, Random Forest, XGBoost, and a custom PyTorch Deep Multi-Layer Perceptron (MLP) with adaptive early stopping and learning rate scheduling.
+  * Unsupervised Anomaly Detection: PyTorch Deep Autoencoder with bottleneck compression and dynamic MSE reconstruction thresholding to isolate zero-day threat outliers.
+- Dual-Persona Translation:
+  * Data Science Mode: Displays raw loss curves, confusion matrices, F1 scores, precision-recall trade-offs, and Shapley feature attribution.
+  * SecOps Action Mode: Converts mathematical metrics into actionable threat intelligence—catch rates, false alarm percentages, adversarial evasion resilience badges, and recommended firewall filtering commands.
+
+================================================================================
+6. THREAT INTELLIGENCE & RULE COMPILATION
+================================================================================
+- Sigma & MITRE ATT&CK Generation:
+  * Automatically maps top contributing adversarial features to MITRE ATT&CK techniques (e.g., T1046 Network Service Discovery, T1059 Command Injection, T1110 Brute Force).
+  * Exports production-ready YAML Sigma rules directly compatible with SIEM/SOAR platforms (Splunk, Elastic, Sentinel).
+- Hybrid LLM / Heuristic Engine:
+  * Pluggable provider registry for 13 LLM threat intelligence endpoints (OpenAI, Anthropic, Gemini, DeepSeek, Groq, Mistral, Ollama, Custom v1).
+  * Built-in offline deterministic rule compiler that activates automatically when API keys are absent, guaranteeing 100% air-gapped usability.
