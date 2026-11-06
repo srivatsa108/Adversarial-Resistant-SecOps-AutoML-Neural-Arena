@@ -36,7 +36,7 @@ git add .
 echo "[+] Scanning staged files for exposed API credentials..."
 LEAK_COUNT=0
 
-if git diff --cached | grep -E -i "(AIza[0-9A-Za-z-_]{35}|sk-[a-zA-Z0-9]{32,}|GEMINI_API_KEY=[a-zA-Z0-9_\-]{10,})" | grep -v "\.env\.example" >/dev/null 2>&1; then
+if git diff --cached | grep -E -i "(AIza[0-9A-Za-z_-]{35}|sk-[a-zA-Z0-9]{32,}|GEMINI_API_KEY=[a-zA-Z0-9_-]{10,})" | grep -v "\.env\.example" >/dev/null 2>&1; then
     echo "    🚨 ERROR: Potential API key or credential pattern detected in staged files!"
     echo "    Review your staged files with 'git diff --cached' before committing."
     exit 1
