@@ -19,21 +19,25 @@
     }
 
     :root {
-      --bg-base: #000000;
-      --bg-surface: #181818;
-      --bg-elevated: #1F1F1F;
-      --bg-highlight: #272727;
-      --border-subtle: #272727;
-      --border-active: #313131;
+      --bg-base: #0A0A0A;
+      --bg-surface: #141414;
+      --bg-elevated: #1E1E1E;
+      --bg-highlight: #262626;
+      --border-subtle: #262626;
+      --border-active: #333333;
       
-      --text-primary: #FFFFFF;
-      --text-muted: #9B9B9B;
-      --text-dim: #666666;
+      --text-primary: #EDEDED;
+      --text-muted: #888888;
+      --text-dim: #555555;
 
-      --accent-teal: #00ffcc;
-      --accent-blue: #00e5ff;
-      --accent-pink: #ff0055;
-      --accent-amber: #ffaa00;
+      --accent-teal: #46A758;
+      --accent-blue: #5B9DF5;
+      --accent-pink: #E5484D;
+      --accent-amber: #F5A524;
+
+      --card-bg: #141414;
+      --nav-bg: rgba(20, 20, 20, 0.92);
+      --canvas-grid: rgba(255, 255, 255, 0.08);
 
       --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'Geist Mono', monospace;
@@ -60,6 +64,74 @@
 
       /* Motion curve per B7 */
       --ease-base: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root:not([data-theme="dark"]) {
+        --bg-base: #F7F7F8;
+        --bg-surface: #FFFFFF;
+        --bg-elevated: #EFEFEF;
+        --bg-highlight: #E5E5E7;
+        --border-subtle: #E5E5E7;
+        --border-active: #D0D0D3;
+        
+        --text-primary: #111111;
+        --text-muted: #666668;
+        --text-dim: #8F8F93;
+
+        --accent-teal: #22863A;
+        --accent-blue: #2F6BFF;
+        --accent-pink: #D73A49;
+        --accent-amber: #B08800;
+
+        --card-bg: #FFFFFF;
+        --nav-bg: rgba(255, 255, 255, 0.94);
+        --canvas-grid: rgba(0, 0, 0, 0.08);
+      }
+    }
+
+    :root[data-theme="light"] {
+      --bg-base: #F7F7F8;
+      --bg-surface: #FFFFFF;
+      --bg-elevated: #EFEFEF;
+      --bg-highlight: #E5E5E7;
+      --border-subtle: #E5E5E7;
+      --border-active: #D0D0D3;
+      
+      --text-primary: #111111;
+      --text-muted: #666668;
+      --text-dim: #8F8F93;
+
+      --accent-teal: #22863A;
+      --accent-blue: #2F6BFF;
+      --accent-pink: #D73A49;
+      --accent-amber: #B08800;
+
+      --card-bg: #FFFFFF;
+      --nav-bg: rgba(255, 255, 255, 0.94);
+      --canvas-grid: rgba(0, 0, 0, 0.08);
+    }
+
+    :root[data-theme="dark"] {
+      --bg-base: #0A0A0A;
+      --bg-surface: #141414;
+      --bg-elevated: #1E1E1E;
+      --bg-highlight: #262626;
+      --border-subtle: #262626;
+      --border-active: #333333;
+      
+      --text-primary: #EDEDED;
+      --text-muted: #888888;
+      --text-dim: #555555;
+
+      --accent-teal: #46A758;
+      --accent-blue: #5B9DF5;
+      --accent-pink: #E5484D;
+      --accent-amber: #F5A524;
+
+      --card-bg: #141414;
+      --nav-bg: rgba(20, 20, 20, 0.92);
+      --canvas-grid: rgba(255, 255, 255, 0.08);
     }
 
     html {
@@ -189,11 +261,9 @@
       color: var(--text-muted);
     }
 
-    /* Hero Text Gradient (Only approved text gradient per B5) */
-    .hero-gradient-text {
-      background: linear-gradient(90deg, #FFFFFF 0%, #9B9B9B 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    /* Hero Title solid per restraint guidelines */
+    .hero-title {
+      color: var(--text-primary);
       max-width: 680px;
     }
 
@@ -216,7 +286,7 @@
 
     .floating-nav {
       pointer-events: auto;
-      background: rgba(24, 24, 24, 0.85);
+      background: var(--nav-bg);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--border-subtle);
@@ -224,7 +294,7 @@
       padding: var(--sp-75) var(--sp-200);
       display: flex;
       align-items: center;
-      gap: var(--sp-400);
+      gap: var(--sp-300);
     }
 
     .brand-mark {
@@ -242,6 +312,40 @@
       align-items: center;
       gap: var(--sp-300);
       list-style: none;
+    }
+
+    /* Theme Switcher */
+    .theme-switcher {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      gap: 2px;
+    }
+
+    .theme-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 150ms var(--ease-base);
+    }
+
+    .theme-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .theme-btn.active {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
     }
 
     .nav-link {
@@ -769,6 +873,11 @@
         <li><a href="#how-it-works" class="nav-link">Architecture</a></li>
         <li><a href="#faq" class="nav-link">Verification</a></li>
       </ul>
+      <div class="theme-switcher" role="radiogroup" aria-label="Color theme">
+        <button type="button" class="theme-btn" data-theme="system" id="theme-btn-system" title="System preference">Auto</button>
+        <button type="button" class="theme-btn" data-theme="light" id="theme-btn-light" title="Light theme">Light</button>
+        <button type="button" class="theme-btn" data-theme="dark" id="theme-btn-dark" title="Dark theme">Dark</button>
+      </div>
       <a href="https://github.com/srivatsa108/Adversarial-Resistant-SecOps-AutoML-Neural-Arena" target="_blank" rel="noopener noreferrer" class="button-sm">
         <i class="ph ph-github-logo"></i>
         <span>Clone repository</span>
@@ -786,7 +895,7 @@
           <span class="caption-4">Zero storage telemetry processor</span>
         </div>
 
-        <h1 class="heading-1 hero-gradient-text">
+        <h1 class="heading-1 hero-title">
           Train evasion proof neural models directly on raw security telemetry
         </h1>
 
@@ -802,7 +911,7 @@
         </div>
 
         <div class="hero-proof-line caption-2">
-          <i class="ph ph-check-circle" style="color: #00ffcc;"></i>
+          <i class="ph ph-check-circle" style="color: #46A758;"></i>
           <span>Tested across 400 real firewall logs and 250 PCAP packets with 0 unmasked bytes exposed</span>
         </div>
 
@@ -884,7 +993,7 @@
                 <!-- Left Visual Panel -->
                 <div class="chart-panel">
                   <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span class="title-4" id="chart-panel-title">🛡️ Evasion Robustness Decay Curve</span>
+                    <span class="title-4" id="chart-panel-title">Evasion Robustness Decay Curve</span>
                     <span class="caption-4" style="color: var(--accent-teal);">PyTorch Neural Net</span>
                   </div>
                   
@@ -897,7 +1006,7 @@
                 <!-- Right Diagnostic / Action Panel -->
                 <div class="chart-panel">
                   <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span class="title-4" id="action-panel-title">⚡ Synthesized Enforcement Rule</span>
+                    <span class="title-4" id="action-panel-title">Synthesized Enforcement Rule</span>
                     <span class="caption-4" style="color: #A6E22E;">Ready to deploy</span>
                   </div>
                   
@@ -942,14 +1051,14 @@ sudo iptables -A INPUT -p tcp --dport 3389 -m recent --update --seconds 60 --hit
 
         <div class="comparison-grid">
           <div class="card">
-            <span class="caption-4" style="color: #ff0055;">Traditional rule engineering</span>
+            <span class="caption-4" style="color: #E5484D;">Traditional rule engineering</span>
             <h3 class="title-1">Fragile static heuristics</h3>
             <p class="body-3">
               Attackers evade traditional port and byte filters by mutating payload length by as little as six percent. Writing regular expressions by hand leaves analysts three steps behind zero day exploits.
             </p>
           </div>
           <div class="card">
-            <span class="caption-4" style="color: #00ffcc;">Antigravity automated arena</span>
+            <span class="caption-4" style="color: #46A758;">Antigravity automated arena</span>
             <h3 class="title-1">Adversarially hardened defenses</h3>
             <p class="body-3">
               Neural autoencoders score reconstruction errors on unseen traffic patterns. Synthetic noise injection measures exactly how much variation your defensive boundaries withstand before breaking.
@@ -1158,8 +1267,8 @@ sudo iptables -A INPUT -p tcp --dport 3389 -m recent --update --seconds 60 --hit
           { label: "Threat Severity Status", val: "OPTIMAL", sub: "Fortified defensive boundary", color: "var(--accent-teal)" },
           { label: "Zero-Trust Vault", val: "12 IPs", sub: "192.168.1.50 -> HOST_001", color: "var(--text-primary)" }
         ],
-        chartTitle: "🛡️ Evasion Robustness Decay Curve",
-        actionTitle: "⚡ Synthesized Enforcement Rule",
+        chartTitle: "Evasion Robustness Decay Curve",
+        actionTitle: "Synthesized Enforcement Rule",
         actionCode: `alert tcp $EXTERNAL_NET any -> $HOME_NET 3389 (msg:"SECOPS-AUTOML: Statistical Anomaly Surpassed Baseline Threshold"; flow:to_server,established; classtype:suspicious-traffic; sid:2026001; rev:1;)
 
 sudo iptables -A INPUT -p tcp --dport 3389 -m state --state NEW -m recent --set
@@ -1173,8 +1282,8 @@ sudo iptables -A INPUT -p tcp --dport 3389 -m recent --update --seconds 60 --hit
           { label: "Autoencoder MSE Threshold", val: "0.0142", sub: "95th percentile reconstruction cut", color: "var(--accent-amber)" },
           { label: "Feature Matrix Dim", val: "250 × 13", sub: "StandardScaler + OneHotEncoder", color: "var(--text-primary)" }
         ],
-        chartTitle: "📈 PyTorch Deep Net Loss Convergence",
-        actionTitle: "🔬 Exact SHAP Feature Attributions",
+        chartTitle: "PyTorch Deep Net Loss Convergence",
+        actionTitle: "Exact SHAP Feature Attributions",
         actionCode: `{"feature": "destination_port_3389", "shap_weight": 0.642, "raw_entropy": 4.77}
 {"feature": "packet_length_volumetric", "shap_weight": 0.241, "z_score": 3.82}
 {"feature": "tcp_flags_SYN", "shap_weight": 0.117, "state": "anomaly"}`,
@@ -1211,7 +1320,7 @@ sudo iptables -A INPUT -p tcp --dport 3389 -m recent --update --seconds 60 --hit
       renderChart();
     }
 
-    // Canvas drawing for dark-mode charts
+    // Canvas drawing with theme awareness
     function renderChart() {
       const canvas = document.getElementById('dashCanvas');
       if (!canvas) return;
@@ -1221,8 +1330,16 @@ sudo iptables -A INPUT -p tcp --dport 3389 -m recent --update --seconds 60 --hit
 
       ctx.clearRect(0, 0, w, h);
 
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light' || 
+        (!document.documentElement.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: light)').matches);
+
+      const gridColor = isLight ? "rgba(0, 0, 0, 0.08)" : "rgba(255, 255, 255, 0.08)";
+      const labelColor = isLight ? "#666668" : "#888888";
+      const areaColor = isLight ? "rgba(47, 107, 255, 0.08)" : "rgba(91, 157, 245, 0.10)";
+      const primaryLineColor = isLight ? "#2F6BFF" : "#5B9DF5";
+
       // Grid lines
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
+      ctx.strokeStyle = gridColor;
       ctx.lineWidth = 1;
       for (let y = 30; y < h; y += 35) {
         ctx.beginPath();
@@ -1234,7 +1351,7 @@ sudo iptables -A INPUT -p tcp --dport 3389 -m recent --update --seconds 60 --hit
       if (currentPersona === 'secops') {
         // Draw Adversarial Decay Curve
         ctx.beginPath();
-        ctx.strokeStyle = "#00e5ff";
+        ctx.strokeStyle = primaryLineColor;
         ctx.lineWidth = 3;
 
         const points = [
@@ -1256,11 +1373,11 @@ sudo iptables -A INPUT -p tcp --dport 3389 -m recent --update --seconds 60 --hit
         ctx.lineTo(points[points.length - 1].x, h - 25);
         ctx.lineTo(points[0].x, h - 25);
         ctx.closePath();
-        ctx.fillStyle = "rgba(0, 229, 255, 0.08)";
+        ctx.fillStyle = areaColor;
         ctx.fill();
 
         // Dots
-        ctx.fillStyle = "#00ffcc";
+        ctx.fillStyle = isLight ? "#22863A" : "#46A758";
         points.forEach(p => {
           ctx.beginPath();
           ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
@@ -1268,7 +1385,7 @@ sudo iptables -A INPUT -p tcp --dport 3389 -m recent --update --seconds 60 --hit
         });
 
         // Labels
-        ctx.fillStyle = "#9B9B9B";
+        ctx.fillStyle = labelColor;
         ctx.font = "11px Geist Mono, monospace";
         ctx.fillText("ε=0.0", 40, h - 10);
         ctx.fillText("ε=0.10", 210, h - 10);
@@ -1278,7 +1395,7 @@ sudo iptables -A INPUT -p tcp --dport 3389 -m recent --update --seconds 60 --hit
       } else {
         // Draw Training Loss Convergence Curve
         ctx.beginPath();
-        ctx.strokeStyle = "#00ffcc";
+        ctx.strokeStyle = isLight ? "#22863A" : "#46A758";
         ctx.lineWidth = 2.5;
 
         // Train loss
@@ -1288,7 +1405,7 @@ sudo iptables -A INPUT -p tcp --dport 3389 -m recent --update --seconds 60 --hit
 
         // Validation loss
         ctx.beginPath();
-        ctx.strokeStyle = "#ff0055";
+        ctx.strokeStyle = isLight ? "#D73A49" : "#E5484D";
         ctx.lineWidth = 2;
         ctx.setLineDash([4, 4]);
         ctx.moveTo(45, 150);
@@ -1297,20 +1414,75 @@ sudo iptables -A INPUT -p tcp --dport 3389 -m recent --update --seconds 60 --hit
         ctx.setLineDash([]);
 
         // Labels
-        ctx.fillStyle = "#9B9B9B";
+        ctx.fillStyle = labelColor;
         ctx.font = "11px Geist Mono, monospace";
         ctx.fillText("Epoch 1", 40, h - 10);
         ctx.fillText("Epoch 10", 250, h - 10);
         ctx.fillText("Epoch 25", 520, h - 10);
 
-        ctx.fillStyle = "#00ffcc";
+        ctx.fillStyle = isLight ? "#22863A" : "#46A758";
         ctx.fillText("Train loss: 0.012", 400, 32);
-        ctx.fillStyle = "#ff0055";
+        ctx.fillStyle = isLight ? "#D73A49" : "#E5484D";
         ctx.fillText("Val loss: 0.018", 400, 48);
       }
     }
 
+    // Theme Management per design specifications
+    function initTheme() {
+      let savedTheme = 'system';
+      try {
+        savedTheme = localStorage.getItem('antigravity_theme') || 'system';
+      } catch (e) {
+        savedTheme = 'system';
+      }
+
+      applyTheme(savedTheme);
+
+      try {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+          let current = 'system';
+          try { current = localStorage.getItem('antigravity_theme') || 'system'; } catch (e) {}
+          if (current === 'system') {
+            applyTheme('system');
+          }
+        });
+      } catch (e) {}
+
+      const buttons = document.querySelectorAll('.theme-btn');
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const mode = btn.getAttribute('data-theme');
+          applyTheme(mode);
+          try {
+            localStorage.setItem('antigravity_theme', mode);
+          } catch (e) {}
+        });
+      });
+    }
+
+    function applyTheme(mode) {
+      const root = document.documentElement;
+      if (mode === 'system') {
+        root.removeAttribute('data-theme');
+      } else {
+        root.setAttribute('data-theme', mode);
+      }
+
+      document.querySelectorAll('.theme-btn').forEach(btn => {
+        if (btn.getAttribute('data-theme') === mode) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      renderChart();
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
+      // 0. Initialize theme
+      initTheme();
+
       // 1. Tagline Reveal Setup: split into individual spans per B11
       const taglineEl = document.getElementById('tagline-reveal');
       if (taglineEl) {
