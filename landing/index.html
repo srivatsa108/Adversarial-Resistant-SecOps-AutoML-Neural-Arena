@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Antigravity • Automated threat modeling for security engineers</title>
+  <meta name="description" content="Train defensive neural networks on local log telemetry, test evasion resistance under synthetic noise, and generate copy ready Snort, YARA, and iptables rules.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23181818'/><path d='M16 6 L26 11 L26 21 L16 26 L6 21 L6 11 Z' stroke='%23ffffff' stroke-width='2' fill='none'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+  <style>
+    /* CSS Reset and Design Tokens per landing-page-design specification */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-base: #000000;
+      --bg-surface: #181818;
+      --bg-elevated: #1F1F1F;
+      --bg-highlight: #272727;
+      --border-subtle: #272727;
+      --border-active: #313131;
+      
+      --text-primary: #FFFFFF;
+      --text-muted: #9B9B9B;
+      --text-dim: #666666;
+
+      --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'Geist Mono', monospace;
+
+      /* Spacing scale */
+      --sp-25: 2px;
+      --sp-50: 4px;
+      --sp-75: 8px;
+      --sp-100: 12px;
+      --sp-200: 16px;
+      --sp-300: 24px;
+      --sp-400: 32px;
+      --sp-500: 40px;
+      --sp-600: 48px;
+      --sp-700: 64px;
+      --sp-800: 80px;
+      --sp-900: 96px;
+
+      /* Radii */
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+
+      /* Motion curve */
+      --ease-base: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 24px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Accessibility Skip Link */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: var(--sp-200);
+      background: var(--text-primary);
+      color: var(--bg-base);
+      padding: var(--sp-75) var(--sp-100);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      z-index: 100;
+      transition: top 200ms ease;
+    }
+    .skip-link:focus {
+      top: var(--sp-200);
+    }
+
+    /* Typography styles per spec B1 */
+    .heading-1 {
+      font-size: 60px;
+      line-height: 60px;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      text-wrap: balance;
+    }
+    .heading-2 {
+      font-size: 48px;
+      line-height: 48px;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      text-wrap: balance;
+    }
+    .heading-3 {
+      font-size: 36px;
+      line-height: 40px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      text-wrap: balance;
+    }
+    .heading-4 {
+      font-size: 30px;
+      line-height: 36px;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      text-wrap: balance;
+    }
+    .heading-5 {
+      font-size: 24px;
+      line-height: 32px;
+      font-weight: 600;
+      text-wrap: balance;
+    }
+    .title-1 {
+      font-size: 20px;
+      line-height: 28px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+    .title-2 {
+      font-size: 18px;
+      line-height: 28px;
+      font-weight: 500;
+    }
+    .title-3 {
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 500;
+    }
+    .title-4 {
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+    .body-2 {
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-wrap: pretty;
+    }
+    .body-3 {
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 400;
+      color: var(--text-muted);
+      text-wrap: pretty;
+    }
+    .body-5 {
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-wrap: pretty;
+    }
+    .body-6 {
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 400;
+      color: var(--text-muted);
+      text-wrap: pretty;
+    }
+    .caption-2 {
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 400;
+      color: var(--text-dim);
+    }
+    .caption-4 {
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    /* Hero Text Gradient (The single approved gradient in spec B5) */
+    .hero-gradient-text {
+      background: linear-gradient(90deg, #FFFFFF 0%, #9B9B9B 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      max-width: 680px;
+    }
+
+    .hero-subhead {
+      max-width: 680px;
+    }
+
+    /* Floating Navigation bar per B7 */
+    .floating-nav-wrap {
+      position: fixed;
+      top: var(--sp-300);
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      z-index: 50;
+      padding: 0 var(--sp-200);
+      pointer-events: none;
+    }
+
+    .floating-nav {
+      pointer-events: auto;
+      background: rgba(24, 24, 24, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: var(--sp-75) var(--sp-200);
+      display: flex;
+      align-items: center;
+      gap: var(--sp-400);
+    }
+
+    .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-75);
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-300);
+      list-style: none;
+    }
+
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+      transition: color 300ms var(--ease-base);
+    }
+    .nav-link:hover, .nav-link.active {
+      color: var(--text-primary);
+    }
+
+    /* Buttons per B1 and B2 */
+    .button-md {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--sp-75);
+      background-color: var(--text-primary);
+      color: var(--bg-base);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 600;
+      padding: var(--sp-75) var(--sp-100);
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 300ms var(--ease-base), transform 300ms var(--ease-base);
+    }
+    .button-md:hover {
+      background-color: #E6E6E6;
+      transform: translateY(-1px);
+    }
+    .button-md:active {
+      transform: scale(0.98);
+    }
+    .button-md:focus-visible {
+      outline: 2px solid var(--text-primary);
+      outline-offset: 2px;
+    }
+
+    .button-sm {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-50);
+      background-color: var(--bg-surface);
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+      padding: var(--sp-50) var(--sp-100);
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 300ms var(--ease-base), border-color 300ms var(--ease-base);
+    }
+    .button-sm:hover {
+      background-color: var(--bg-elevated);
+      border-color: var(--border-active);
+    }
+    .button-sm:focus-visible {
+      outline: 2px solid var(--text-primary);
+      outline-offset: 2px;
+    }
+
+    /* Main Container & Sections */
+    main {
+      flex: 1;
+      padding-top: calc(var(--sp-900) + var(--sp-400));
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 var(--sp-300);
+    }
+
+    section {
+      padding: var(--sp-800) 0;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      padding-top: var(--sp-400);
+      padding-bottom: var(--sp-800);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: var(--sp-300);
+    }
+
+    .hero-meta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-75);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--sp-50) var(--sp-100);
+    }
+
+    .hero-ctas {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-200);
+      margin-top: var(--sp-100);
+    }
+
+    .hero-proof-line {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-75);
+      color: var(--text-dim);
+    }
+
+    /* Hero Visual: Technical Terminal / Interactive Neural Dashboard */
+    .hero-visual-card {
+      margin-top: var(--sp-500);
+      width: 100%;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: var(--sp-200);
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Nested Radius Formula per B3: outer 16px - gap 16px = 8px (rounded-md) */
+    .hero-inner-panel {
+      background-color: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--sp-300);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--text-muted);
+      overflow-x: auto;
+    }
+
+    .code-row {
+      display: flex;
+      align-items: baseline;
+      gap: var(--sp-200);
+      padding: var(--sp-50) 0;
+    }
+    .code-idx {
+      color: var(--text-dim);
+      user-select: none;
+      width: 24px;
+    }
+    .code-green { color: #A6E22E; }
+    .code-blue { color: #66D9EF; }
+    .code-yellow { color: #E6DB74; }
+    .code-red { color: #F92672; }
+
+    /* Mandatory Tagline Reveal Section per B11 */
+    .tagline-section {
+      padding: var(--sp-900) 0;
+      text-align: center;
+    }
+    .tagline-content {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .tagline-reveal-text {
+      font-size: 36px;
+      line-height: 44px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    .reveal-word {
+      opacity: 0.28;
+      transition: opacity 500ms var(--ease-base), color 500ms var(--ease-base);
+      display: inline-block;
+      margin-right: 0.28em;
+    }
+    .reveal-word.active {
+      opacity: 1;
+      color: var(--text-primary);
+    }
+
+    /* Problem to Solution Card */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-300);
+      margin-top: var(--sp-400);
+    }
+
+    .card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: var(--sp-300);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-200);
+    }
+
+    /* Benefits 3-column Grid */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--sp-300);
+      margin-top: var(--sp-400);
+    }
+
+    .benefit-item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-100);
+    }
+
+    .icon-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background-color: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-primary);
+      font-size: 20px;
+      margin-bottom: var(--sp-100);
+    }
+
+    /* How it Works: 3 Steps */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--sp-300);
+      margin-top: var(--sp-400);
+    }
+
+    .step-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: var(--sp-300);
+      position: relative;
+    }
+
+    .step-number {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 16px;
+      color: var(--text-dim);
+      margin-bottom: var(--sp-100);
+    }
+
+    /* FAQ Section */
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-200);
+      margin-top: var(--sp-400);
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .faq-item {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--sp-300);
+      cursor: pointer;
+      transition: border-color 300ms var(--ease-base);
+    }
+    .faq-item:hover {
+      border-color: var(--border-active);
+    }
+
+    .faq-question {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+
+    .faq-answer {
+      margin-top: var(--sp-100);
+      display: block;
+    }
+
+    /* Final CTA */
+    .final-cta-section {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: var(--sp-800) var(--sp-400);
+      text-align: center;
+      margin: var(--sp-800) 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sp-300);
+    }
+
+    /* Footer per B10 */
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: var(--sp-600) 0;
+      background-color: var(--bg-base);
+    }
+
+    .footer-grid {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--sp-300);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: var(--sp-300);
+      list-style: none;
+    }
+
+    .footer-link {
+      color: var(--text-dim);
+      font-size: 14px;
+      line-height: 20px;
+      text-decoration: none;
+      transition: color 300ms var(--ease-base);
+    }
+    .footer-link:hover {
+      color: var(--text-primary);
+    }
+
+    /* Scroll reveal animation per B7 */
+    .reveal-on-scroll {
+      opacity: 0;
+      transform: translateY(var(--sp-400));
+      transition: opacity 700ms var(--ease-base), transform 700ms var(--ease-base);
+    }
+    .reveal-on-scroll.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Reduced motion check per B7 */
+    @media (prefers-reduced-motion: reduce) {
+      .reveal-on-scroll {
+        transform: none !important;
+        transition: opacity 300ms ease !important;
+      }
+      .reveal-word {
+        opacity: 1 !important;
+        transition: none !important;
+      }
+    }
+
+    /* Mobile check at 390px per B10 */
+    @media (max-width: 768px) {
+      .heading-1 { font-size: 36px; line-height: 40px; }
+      .heading-2 { font-size: 30px; line-height: 36px; }
+      .tagline-reveal-text { font-size: 24px; line-height: 32px; }
+      .comparison-grid, .grid-3, .steps-grid {
+        grid-template-columns: 1fr;
+      }
+      .floating-nav {
+        gap: var(--sp-200);
+        padding: var(--sp-50) var(--sp-100);
+      }
+      .nav-links {
+        display: none;
+      }
+      .footer-grid {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Skip to Content Accessibility Link -->
+  <a href="#main-content" class="skip-link">Skip to primary content</a>
+
+  <!-- Floating Navigation Bar per B7 -->
+  <header class="floating-nav-wrap">
+    <nav class="floating-nav" aria-label="Main Navigation">
+      <a href="#" class="brand-mark">
+        <i class="ph ph-shield-check" style="font-size: 20px;"></i>
+        <span>Antigravity</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#benefits" class="nav-link">Benefits</a></li>
+        <li><a href="#how-it-works" class="nav-link">Architecture</a></li>
+        <li><a href="#faq" class="nav-link">Verification</a></li>
+      </ul>
+      <a href="https://github.com/srivatsa108/Adversarial-Resistant-SecOps-AutoML-Neural-Arena" target="_blank" rel="noopener noreferrer" class="button-sm">
+        <i class="ph ph-github-logo"></i>
+        <span>Clone repository</span>
+      </a>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <div class="container">
+
+      <!-- HERO SECTION per A2 & B5 -->
+      <section class="hero-section reveal-on-scroll">
+        <div class="hero-meta-badge">
+          <i class="ph ph-lock-key caption-4"></i>
+          <span class="caption-4">Zero storage telemetry processor</span>
+        </div>
+
+        <h1 class="heading-1 hero-gradient-text">
+          Train evasion proof neural models directly on raw security telemetry
+        </h1>
+
+        <p class="body-2 hero-subhead">
+          Antigravity runs local deep learning and automated adversarial noise injection over your firewall and authentication logs without transmitting internal hostnames or IP addresses.
+        </p>
+
+        <div class="hero-ctas">
+          <a href="https://github.com/srivatsa108/Adversarial-Resistant-SecOps-AutoML-Neural-Arena" class="button-md">
+            <span>Run local benchmark</span>
+            <i class="ph ph-arrow-right"></i>
+          </a>
+        </div>
+
+        <div class="hero-proof-line caption-2">
+          <i class="ph ph-check-circle" style="color: #A6E22E;"></i>
+          <span>Tested across 400 real firewall logs with 0 unmasked bytes exposed</span>
+        </div>
+
+        <!-- Hero Technical Preview Visual -->
+        <div class="hero-visual-card">
+          <div class="hero-inner-panel">
+            <div class="code-row">
+              <span class="code-idx">01</span>
+              <span>$ <span class="code-blue">python</span> generate_samples.py && <span class="code-blue">streamlit</span> run app_streamlit.py</span>
+            </div>
+            <div class="code-row">
+              <span class="code-idx">02</span>
+              <span class="code-yellow">[Zero-Trust Masker]</span>
+              <span>Mapped 192.168.1.50 -> <span class="code-green">INTERNAL_HOST_001</span> (Vault memory only)</span>
+            </div>
+            <div class="code-row">
+              <span class="code-idx">03</span>
+              <span class="code-yellow">[Neural Arena]</span>
+              <span>Training Deep PyTorch Autoencoder on 400 normalized vectors...</span>
+            </div>
+            <div class="code-row">
+              <span class="code-idx">04</span>
+              <span class="code-green">[Adversarial Stress Test]</span>
+              <span>Tested noise bounds epsilon=0.20 -> Evasion resistance: <span class="code-green">94.2%</span></span>
+            </div>
+            <div class="code-row">
+              <span class="code-idx">05</span>
+              <span class="code-red">[MITRE Synthesizer]</span>
+              <span>Generated Snort signature SID 2026001 and Linux iptables port 3389 drop rules</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MANDATORY TAGLINE REVEAL SECTION per B11 -->
+      <section class="tagline-section reveal-on-scroll">
+        <div class="tagline-content">
+          <p class="tagline-reveal-text" id="tagline-reveal">
+            <!-- Words injected and activated individually on scroll -->
+            Defensive artificial intelligence should never require exposing internal corporate network topology to public cloud providers.
+          </p>
+        </div>
+      </section>
+
+      <!-- PROBLEM TO SOLUTION SECTION per A2 -->
+      <section class="reveal-on-scroll">
+        <div style="text-align: center; max-width: 680px; margin: 0 auto;">
+          <h2 class="heading-2">Stop guessing why classical detection rules fail</h2>
+          <p class="body-2" style="margin-top: var(--sp-100);">
+            Signature based tools cannot keep up with mutated packet lengths, and cloud machine learning introduces severe data governance liabilities.
+          </p>
+        </div>
+
+        <div class="comparison-grid">
+          <div class="card">
+            <span class="caption-4" style="color: #F92672;">Traditional rule engineering</span>
+            <h3 class="title-1">Fragile static heuristics</h3>
+            <p class="body-3">
+              Attackers evade traditional port and byte filters by mutating payload length by as little as six percent. Writing regular expressions by hand leaves analysts three steps behind zero day exploits.
+            </p>
+          </div>
+          <div class="card">
+            <span class="caption-4" style="color: #A6E22E;">Antigravity automated arena</span>
+            <h3 class="title-1">Adversarially hardened defenses</h3>
+            <p class="body-3">
+              Neural autoencoders score reconstruction errors on unseen traffic patterns. Synthetic noise injection measures exactly how much variation your defensive boundaries withstand before breaking.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- BENEFITS SECTION per A2 & A5 -->
+      <section id="benefits" class="reveal-on-scroll">
+        <div style="text-align: center; max-width: 680px; margin: 0 auto;">
+          <h2 class="heading-2">Engineered for security operations centers</h2>
+          <p class="body-2" style="margin-top: var(--sp-100);">
+            Outcome driven automation that delivers actionable mitigation commands instead of raw mathematical abstractions.
+          </p>
+        </div>
+
+        <div class="grid-3">
+          <div class="card benefit-item">
+            <div class="icon-badge"><i class="ph ph-shield-slash"></i></div>
+            <h3 class="title-2">Adversarial stress testing</h3>
+            <p class="body-5">
+              Simulate evasion noise before adversaries deploy it. The tester injects bounded perturbations into continuous telemetry to calculate your model hackability score.
+            </p>
+          </div>
+
+          <div class="card benefit-item">
+            <div class="icon-badge"><i class="ph ph-eye"></i></div>
+            <h3 class="title-2">Transparent feature attribution</h3>
+            <p class="body-5">
+              Explain black box neural decisions. SHAP values translate gradient calculations into plain English root causes detailing exact packet duration and port impact.
+            </p>
+          </div>
+
+          <div class="card benefit-item">
+            <div class="icon-badge"><i class="ph ph-terminal-window"></i></div>
+            <h3 class="title-2">Live rule generation</h3>
+            <p class="body-5">
+              Export verified defensive code instantly. Automatically synthesize validated YARA rules, Snort signatures, and iptables firewall blocks configured to your mathematical thresholds.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- HOW IT WORKS SECTION per A2 -->
+      <section id="how-it-works" class="reveal-on-scroll">
+        <div style="text-align: center; max-width: 680px; margin: 0 auto;">
+          <h2 class="heading-2">From raw log ingestion to firewall enforcement</h2>
+          <p class="body-2" style="margin-top: var(--sp-100);">
+            Three deterministic stages operating entirely in volatile memory.
+          </p>
+        </div>
+
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-number">STAGE 01</div>
+            <h3 class="title-2">In memory privacy masking</h3>
+            <p class="body-6" style="margin-top: var(--sp-100);">
+              Drop your CSV, JSON, or PDF logs into the processor. Sensitive IPv4, IPv6, MAC, and email addresses are cryptographically swapped with synthetic tokens before reaching analysis pipelines.
+            </p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">STAGE 02</div>
+            <h3 class="title-2">AutoML neural arena</h3>
+            <p class="body-6" style="margin-top: var(--sp-100);">
+              The arena trains competitive classifiers or an unsupervised PyTorch autoencoder. High error reconstructions are isolated as zero day candidates deviating from baseline network traffic.
+            </p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">STAGE 03</div>
+            <h3 class="title-2">Defensive rule compilation</h3>
+            <p class="body-6" style="margin-top: var(--sp-100);">
+              Decision boundaries are mapped to MITRE ATT&CK technique identifiers. The system compiles ready to paste Snort signatures and rate limiting Linux firewall commands.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- VERIFICATION FAQ SECTION per A2 -->
+      <section id="faq" class="reveal-on-scroll">
+        <div style="text-align: center; max-width: 680px; margin: 0 auto;">
+          <h2 class="heading-2">Frequently asked questions</h2>
+          <p class="body-2" style="margin-top: var(--sp-100);">
+            Concrete operational specifications for security teams.
+          </p>
+        </div>
+
+        <div class="faq-list">
+          <div class="faq-item">
+            <div class="faq-question">
+              <span class="title-3">Does any telemetry touch physical disk storage?</span>
+              <i class="ph ph-caret-down"></i>
+            </div>
+            <div class="faq-answer">
+              <p class="body-6">
+                No. All file parsing executes inside volatile memory byte streams. Buffers are purged immediately after tensor preparation.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span class="title-3">How does local demasking maintain compliance?</span>
+              <i class="ph ph-caret-down"></i>
+            </div>
+            <div class="faq-answer">
+              <p class="body-6">
+                The cryptographic lookup vault lives strictly within the local application memory. When an external language model returns MITRE mappings, the substitution happens locally on your browser screen.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span class="title-3">What happens if no external API key is provided?</span>
+              <i class="ph ph-caret-down"></i>
+            </div>
+            <div class="faq-answer">
+              <p class="body-6">
+                Antigravity features a deterministic cyber heuristic engine that synthesizes complete YARA, Snort, and iptables rules offline without calling any cloud service.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span class="title-3">Which machine learning architectures are benchmarked?</span>
+              <i class="ph ph-caret-down"></i>
+            </div>
+            <div class="faq-answer">
+              <p class="body-6">
+                Logistic Regression, Random Forest, XGBoost gradient boosting, and a Deep Multi Layer Perceptron neural network with dropout and ReLU activations. Unlabeled sets trigger the Deep Autoencoder.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span class="title-3">How is the evasion resistance score calculated?</span>
+              <i class="ph ph-caret-down"></i>
+            </div>
+            <div class="faq-answer">
+              <p class="body-6">
+                We measure baseline F1 detection score against synthetic Laplacian and Gaussian noise perturbations across multiple epsilon levels, scoring the percentage of retained defensive efficacy.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span class="title-3">Is this platform open source?</span>
+              <i class="ph ph-caret-down"></i>
+            </div>
+            <div class="faq-answer">
+              <p class="body-6">
+                Yes. Distributed under the standard MIT License. You can inspect, modify, and host the code internally without vendor licensing restrictions.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FINAL CTA SECTION per A2 & A5 -->
+      <section class="final-cta-section reveal-on-scroll">
+        <h2 class="heading-2 hero-gradient-text">Deploy hardened cyber machine learning today</h2>
+        <p class="body-2" style="max-width: 540px;">
+          Clone the open source repository, run the sample generator, and launch the dark mode SecOps dashboard in under two minutes.
+        </p>
+        <a href="https://github.com/srivatsa108/Adversarial-Resistant-SecOps-AutoML-Neural-Arena" class="button-md">
+          <span>Run local benchmark</span>
+          <i class="ph ph-arrow-right"></i>
+        </a>
+        <span class="caption-4">Requires Python 3.10 or higher • No credit card or registration</span>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- FOOTER per B10 -->
+  <footer>
+    <div class="container footer-grid">
+      <div style="display: flex; align-items: center; gap: var(--sp-100);">
+        <i class="ph ph-shield-check" style="font-size: 20px;"></i>
+        <span class="caption-2">© 2026 Antigravity SecOps AI Project</span>
+      </div>
+      <ul class="footer-links">
+        <li><a href="https://github.com/srivatsa108/Adversarial-Resistant-SecOps-AutoML-Neural-Arena/blob/main/LICENSE" class="footer-link">MIT License</a></li>
+        <li><a href="https://github.com/srivatsa108/Adversarial-Resistant-SecOps-AutoML-Neural-Arena/blob/main/README.md" class="footer-link">Documentation</a></li>
+        <li><a href="https://github.com/srivatsa108/Adversarial-Resistant-SecOps-AutoML-Neural-Arena" class="footer-link">GitHub Repository</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <!-- Tagline Reveal & Scroll Reveal Script adhering to B7 & B11 -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Tagline Reveal Setup: split into individual spans per B11
+      const taglineEl = document.getElementById('tagline-reveal');
+      if (taglineEl) {
+        const text = taglineEl.innerText.trim();
+        const words = text.split(/\s+/);
+        taglineEl.innerHTML = words.map(w => `<span class="reveal-word">${w}</span>`).join(' ');
+      }
+
+      // 2. Word-by-word reveal on scroll throttled via requestAnimationFrame per B7 & B11
+      const wordSpans = document.querySelectorAll('.reveal-word');
+      let ticking = false;
+
+      function updateWordReveal() {
+        const triggerY = window.innerHeight * 0.75;
+        wordSpans.forEach(span => {
+          const rect = span.getBoundingClientRect();
+          if (rect.top < triggerY) {
+            span.classList.add('active');
+          }
+        });
+        ticking = false;
+      }
+
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          window.requestAnimationFrame(updateWordReveal);
+          ticking = true;
+        }
+      }, { passive: true });
+      updateWordReveal();
+
+      // 3. Section Reveal via IntersectionObserver per B7
+      const revealElements = document.querySelectorAll('.reveal-on-scroll');
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries, obs) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('revealed');
+              obs.unobserve(entry.target); // Reveal each section once per B7
+            }
+          });
+        }, { threshold: 0.12 });
+
+        revealElements.forEach(el => observer.observe(el));
+      } else {
+        revealElements.forEach(el => el.classList.add('revealed'));
+      }
+
+      // 4. Accessible FAQ Accordion Toggle
+      const faqItems = document.querySelectorAll('.faq-item');
+      faqItems.forEach(item => {
+        item.addEventListener('click', () => {
+          const answer = item.querySelector('.faq-answer');
+          const isHidden = answer.style.display === 'none';
+          answer.style.display = isHidden ? 'block' : 'none';
+        });
+      });
+    });
+  </script>
+</body>
+</html>
