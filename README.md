@@ -1,4 +1,4 @@
-# 🛡️ Adversarial-Resistant SecOps AutoML & Neural Arena
+# Adversarial-Resistant SecOps AutoML & Neural Arena
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-teal.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
@@ -87,7 +87,7 @@
 
 ---
 
-## 🚀 Quickstart & Local Installation
+## Quickstart & Local Installation
 
 ### Prerequisites
 - Python 3.10+ (macOS, Linux, or Windows)
@@ -155,7 +155,7 @@ Interactive Swagger/OpenAPI documentation is available at [http://localhost:8000
 
 ---
 
-## 🔐 Security & Privacy Disclaimer
+## Security & Privacy Disclaimer
 
 > [!CAUTION]
 > **CRITICAL SECURITY NOTICE FOR SECURITY ANALYSTS:**
@@ -163,6 +163,6 @@ Interactive Swagger/OpenAPI documentation is available at [http://localhost:8000
 
 ---
 
-## 📜 License
+## License
 
 Distributed under the **MIT License**. See `LICENSE` for more information.
