@@ -291,3 +291,63 @@ def create_anomaly_reconstruction_plot(
     fig.update_xaxes(title_text="Telemetry record index")
     fig.update_yaxes(title_text="Reconstruction error (MSE)")
     return apply_theme_layout(fig, "Reconstruction error distribution", height=380, theme=theme)
+
+
+def create_verification_latency_chart(
+    test_results: List[Dict[str, Any]],
+    theme: str = "dark",
+) -> go.Figure:
+    """Plot verification test suite latencies with pass/fail indicators."""
+    t = get_theme_tokens(theme)
+    fig = go.Figure()
+
+    ids = [r["id"] for r in test_results]
+    names = [r["name"] for r in test_results]
+    durations = [r["duration_ms"] for r in test_results]
+    colors = [t["success"] if r["status"] == "PASSED" else t["danger"] for r in test_results]
+
+    fig.add_trace(
+        go.Bar(
+            x=durations,
+            y=ids,
+            orientation="h",
+            text=[f"{d:.1f} ms" for d in durations],
+            textposition="auto",
+            textfont={"family": t["mono_family"], "size": 11, "color": "#FFFFFF"},
+            hovertext=names,
+            marker={"color": colors, "line": {"color": t["border"], "width": 1}},
+        )
+    )
+
+    fig.update_xaxes(title_text="Execution latency (ms)", type="log")
+    fig.update_yaxes(autorange="reversed")
+    return apply_theme_layout(fig, "System invariant verification latency (log ms)", height=380, theme=theme)
+
+
+def create_telemetry_distribution_plot(
+    feature_counts: Dict[str, int],
+    title: str = "Telemetry distribution breakdown",
+    theme: str = "dark",
+) -> go.Figure:
+    """Plot distribution of telemetry categories or protocols."""
+    t = get_theme_tokens(theme)
+    fig = go.Figure()
+
+    labels = list(feature_counts.keys())
+    values = list(feature_counts.values())
+
+    fig.add_trace(
+        go.Bar(
+            x=labels,
+            y=values,
+            marker={"color": t["accent"], "line": {"color": t["border"], "width": 1}},
+            text=values,
+            textposition="auto",
+            textfont={"family": t["mono_family"], "size": 11, "color": "#FFFFFF"},
+        )
+    )
+
+    fig.update_xaxes(title_text="Category / Protocol")
+    fig.update_yaxes(title_text="Sample count")
+    return apply_theme_layout(fig, title, height=320, theme=theme)
+

@@ -1,11 +1,10 @@
-# Adversarial-Resistant SecOps AutoML & Neural Arena
+# AegisOps: Adversarial-Resistant SecOps AutoML & Neural Arena
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-teal.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Framework](https://img.shields.io/badge/Streamlit-1.40+-ff4b4b.svg)](https://streamlit.io/)
 [![API Backend](https://img.shields.io/badge/FastAPI-0.110+-009688.svg)](https://fastapi.tiangolo.com/)
 [![Deep Learning](https://img.shields.io/badge/PyTorch-2.2+-ee4c2c.svg)](https://pytorch.org/)
-[![Google Antigravity](https://img.shields.io/badge/Google-Antigravity_SDK-4285F4.svg)](https://ai.google.dev/)
 
 > **A production-ready, open-source Adversarial-Resistant, Explainable Automated Machine Learning (AutoML) and Deep Neural Network platform engineered for cybersecurity telemetry, threat hunting, and incident response.**
 
@@ -50,7 +49,7 @@
    └──────────────────────────────────┬─────────────────────────────────────┘
                                       │ (Sanitized Cyber Telemetry Payload)
    ┌──────────────────────────────────▼─────────────────────────────────────┐
-   │         GOOGLE ANTIGRAVITY AGENT / MITRE DEFENSIVE RULE GENERATOR      │
+   │         AI THREAT INTEL AGENT / MITRE DEFENSIVE RULE GENERATOR         │
    │  • MITRE ATT&CK Matrix Mapping (Tactic & Technique IDs: T1046, T1071)  │
    │  • Synthesizes Live YARA Rules                                         │
    │  • Synthesizes Snort / Suricata IDS Signatures                         │
@@ -79,7 +78,7 @@
 - Translates mathematical gradient vectors into actionable cyber narratives (e.g., *"Flagged primarily due to unusual RDP Port 3389 traffic [64% impact] and prolonged connection duration [24% impact]"*).
 
 ### 5. Automated MITRE ATT&CK Mapping & Live Defensive Rule Generation
-- Packages model boundaries, Autoencoder zero-day anomaly vectors, and SHAP weights into a sanitized payload for the **Google Antigravity Agent** (with an offline cybersecurity heuristic fallback).
+- Packages model boundaries, Autoencoder zero-day anomaly vectors, and SHAP weights into a sanitized payload for the **AI Threat Intelligence Agent** (with an offline cybersecurity heuristic fallback).
 - Outputs production-ready, copy-pasteable:
   - **YARA Rules** with exact string tokens and hex patterns.
   - **Snort / Suricata IDS Signatures** with tailored flow and port targets.
@@ -150,7 +149,7 @@ Interactive Swagger/OpenAPI documentation is available at [http://localhost:8000
 2. Go to [Streamlit Community Cloud](https://share.streamlit.io/) and click **New App**.
 3. Select your repository, set the branch to `main`, and specify `app_streamlit.py` as the **Main file path**.
 4. In **Advanced Settings**, add your environment variables:
-   - `GEMINI_API_KEY`: *(Your Google Antigravity/Gemini API key)*
+   - `GEMINI_API_KEY`: *(Optional threat intelligence API key)*
 5. Click **Deploy!**
 
 ---

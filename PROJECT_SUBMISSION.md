@@ -1,9 +1,9 @@
-# Project Submission: Adversarial-Resistant SecOps AutoML & Neural Arena
+# Project Submission: AegisOps - Adversarial-Resistant SecOps AutoML & Neural Arena
 
 **GitHub Repository:** https://github.com/srivatsa108/Adversarial-Resistant-SecOps-AutoML-Neural-Arena
 **Primary Author:** Srivatsa (https://github.com/srivatsa108)
 **License:** MIT
-**Tech Stack:** Python 3.10+, PyTorch, scikit-learn, XGBoost, Scapy, SHAP, Streamlit, FastAPI, Plotly, Google Antigravity SDK
+**Tech Stack:** Python 3.10+, PyTorch, Scikit-Learn, XGBoost, Scapy, SHAP, Streamlit, FastAPI, Plotly
 
 ---
 
@@ -11,13 +11,13 @@
 
 Classical intrusion detection systems and rule-based firewalls rely on static signatures that attackers evade by slightly changing packet sizes, entropy or request timing. Cloud-based machine learning avoids that, but sends raw internal network data to third parties, which creates GDPR and SOC 2 liability.
 
-Antigravity is an open-source AutoML and deep neural network platform built for cybersecurity telemetry. It runs entirely in memory (`io.BytesIO`) with no temporary files, masks sensitive entities before any model sees them, stress-tests models against adversarial noise, explains decisions with SHAP, and generates Snort, YARA and iptables rules mapped to MITRE ATT&CK.
+AegisOps is an open-source AutoML and deep neural network platform built for cybersecurity telemetry. It runs entirely in memory (`io.BytesIO`) with no temporary files, masks sensitive entities before any model sees them, stress-tests models against adversarial noise, explains decisions with SHAP, and generates Snort, YARA and iptables rules mapped to MITRE ATT&CK.
 
 ---
 
 ## Key features
 
-1. **In-memory ingestion (CSV, JSON, PDF, PCAP/PCAPNG).** Parses network, transport and payload-entropy features directly from RAM.
+1. **In-memory ingestion (CSV, JSON, PDF, PCAP/PCAPNG).** Parses network, transport and payload-entropy features directly from RAM up to 1 GB.
 2. **Local anonymizer (`PrivacyMasker`).** Replaces internal IPs (`192.168.1.50` becomes `INTERNAL_HOST_001`), MAC addresses, emails and URLs before tensor preparation. An optional toggle restores real values on the local screen only.
 3. **Two operating modes.**
    - *SecOps action mode (default):* plain-English severity labels (Critical, High, Medium, Low), impact summaries and ready-to-run firewall commands.
@@ -25,7 +25,8 @@ Antigravity is an open-source AutoML and deep neural network platform built for 
 4. **Adaptive model arena.** Compares Logistic Regression, Random Forest, XGBoost and a multi-layer perceptron for supervised detection. On unlabeled logs it trains a PyTorch autoencoder and flags high reconstruction error as possible zero-day activity.
 5. **Adversarial robustness testing (`AdversarialRobustnessTester`).** Adds bounded FGSM and Laplacian noise to continuous features and reports an Evasion Resistance Score (0 to 100%).
 6. **Explainability with SHAP.** Converts feature contributions into plain-English causes, for example: "Flagged due to unusual RDP port 3389 traffic (64.2% impact) and long connection duration (24.1% impact)."
-7. **MITRE ATT&CK mapping and rule generation.** Produces YARA rules, Snort/Suricata signatures and iptables/UFW commands, using the Antigravity agent with an offline heuristic fallback.
+7. **MITRE ATT&CK mapping and rule generation.** Produces YARA rules, Snort/Suricata signatures and iptables/UFW commands, using an AI agent with an offline heuristic fallback.
+8. **Automated verification suite.** Live in-dashboard test runner profiling all 10 defensive and mathematical invariants with exact millisecond latencies.
 
 ---
 

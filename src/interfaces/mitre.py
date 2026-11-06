@@ -23,7 +23,7 @@ class BaseMitreRuleGenerator(ABC):
             top_features: Identified high-impact cyber features and thresholds.
             anomalies_sample: Extracted high-risk anomaly event vectors.
             robustness_metrics: Adversarial vulnerability metrics.
-            api_key: Optional Gemini API Key for Google Antigravity Agent.
+            api_key: Optional Gemini API Key for Threat Intelligence Agent.
 
         Returns:
             Dictionary containing:
