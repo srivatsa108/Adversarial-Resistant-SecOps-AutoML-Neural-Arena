@@ -4,6 +4,8 @@ from typing import Dict, Type
 from src.interfaces.parser import BaseFileParser
 from src.parsers.csv_parser import CSVFileParser
 from src.parsers.json_parser import JSONFileParser
+from src.parsers.log_parser import LogFileParser
+from src.parsers.parquet_parser import ParquetFileParser
 from src.parsers.pcap_parser import PCAPFileParser
 from src.parsers.pdf_parser import PDFFileParser
 
@@ -13,10 +15,18 @@ class ParserFactory:
 
     _registry: Dict[str, Type[BaseFileParser]] = {
         "csv": CSVFileParser,
+        "tsv": CSVFileParser,
         "json": JSONFileParser,
+        "jsonl": JSONFileParser,
+        "ndjson": JSONFileParser,
         "pdf": PDFFileParser,
         "pcap": PCAPFileParser,
         "pcapng": PCAPFileParser,
+        "log": LogFileParser,
+        "syslog": LogFileParser,
+        "cef": LogFileParser,
+        "txt": LogFileParser,
+        "parquet": ParquetFileParser,
     }
 
     @classmethod

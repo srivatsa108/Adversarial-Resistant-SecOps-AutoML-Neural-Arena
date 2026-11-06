@@ -95,6 +95,21 @@ def test_parsers_in_memory():
     assert "destination_port" in df_pcap.columns
     assert "packet_length" in df_pcap.columns
 
+    # Syslog / CEF log parser
+    log_bytes = b"Oct 24 14:10:05 myhost sshd[1234]: Failed password for root from 192.168.1.55 port 22 ssh2\n"
+    log_parser = ParserFactory.get_parser("log")
+    df_log = log_parser.parse(io.BytesIO(log_bytes), "auth.log")
+    assert len(df_log) == 1
+    assert "source_ip" in df_log.columns
+
+    # Parquet parser
+    parquet_parser = ParserFactory.get_parser("parquet")
+    with open("data/samples/security_telemetry.parquet", "rb") as f:
+        pq_bytes = f.read()
+    df_pq = parquet_parser.parse(io.BytesIO(pq_bytes), "telemetry.parquet")
+    assert len(df_pq) > 0
+    assert "destination_port" in df_pq.columns
+
 
 def test_cleaner_junk_filtering():
     """Verify deduplication, zero-variance pruning, and dynamic imputation."""

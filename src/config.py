@@ -12,20 +12,27 @@ class SecurityConfig:
     MAX_FILE_SIZE_BYTES: int = 1024 * 1024 * 1024
 
     # Permitted file extensions
-    ALLOWED_EXTENSIONS: FrozenSet[str] = frozenset({"csv", "json", "pdf", "pcap", "pcapng"})
+    ALLOWED_EXTENSIONS: FrozenSet[str] = frozenset({
+        "csv", "tsv", "json", "jsonl", "ndjson", "pdf", "pcap", "pcapng",
+        "log", "syslog", "cef", "txt", "parquet"
+    })
 
     # Permitted MIME types
     ALLOWED_MIME_TYPES: FrozenSet[str] = frozenset(
         {
             "text/csv",
             "text/plain",
+            "text/tab-separated-values",
             "application/json",
+            "application/x-ndjson",
             "application/pdf",
             "application/x-pdf",
             "application/vnd.tcpdump.pcap",
             "application/x-pcap",
             "application/pcap",
             "application/octet-stream",
+            "application/x-parquet",
+            "application/vnd.apache.parquet",
         }
     )
 
@@ -41,6 +48,7 @@ class SecurityConfig:
                 b"\xa1\xb2\x3c\x4d",
             ],
             "pcapng": [b"\x0a\x0d\x0d\x0a"],
+            "parquet": [b"PAR1"],
         }
     )
 

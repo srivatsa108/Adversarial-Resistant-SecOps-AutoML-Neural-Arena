@@ -173,6 +173,48 @@ def generate_samples(output_dir: str = "data/samples") -> None:
     except Exception as e:
         print(f"Could not generate scapy PCAP: {e}")
 
+    # ==========================================
+    # 4. Syslog / CEF Telemetry: auth_syslog.log
+    # ==========================================
+    syslog_path = os.path.join(output_dir, "auth_syslog.log")
+    syslog_lines = []
+    hosts = ["core-router-01", "dmz-firewall-02", "vpn-gateway-01", "dc-primary.internal"]
+    for i in range(250):
+        is_attack = random.random() < 0.25
+        h = random.choice(hosts)
+        src = f"192.168.1.{random.randint(10, 80)}" if not is_attack else "203.0.113.195"
+        dst = "10.0.0.15"
+        dport = 22 if is_attack else random.choice([80, 443, 389, 445])
+        act = "DENIED" if is_attack else "ALLOWED"
+        msg = f"Failed password for invalid user admin from {src} port {random.randint(1024,65535)} ssh2" if is_attack else f"Accepted publickey for sysadmin from {src} port 52411 ssh2"
+        line = f"Oct 24 14:{random.randint(10,59):02d}:{random.randint(10,59):02d} {h} sshd[{random.randint(1000,9999)}]: {msg}"
+        syslog_lines.append(line)
+
+    with open(syslog_path, "w", encoding="utf-8") as f:
+        f.write("\n".join(syslog_lines))
+    print(f"Generated {len(syslog_lines)} syslog lines -> {syslog_path}")
+
+    # ===================================================
+    # 5. Security Data Lake: security_telemetry.parquet
+    # ===================================================
+    parquet_path = os.path.join(output_dir, "security_telemetry.parquet")
+    parquet_rows = []
+    for i in range(300):
+        is_threat = random.random() < 0.30
+        parquet_rows.append({
+            "flow_duration_ms": round(float(np.random.exponential(120 if is_threat else 15)), 2),
+            "bytes_transferred": int(np.random.normal(85000 if is_threat else 4200, 1500)),
+            "packet_rate_per_sec": round(float(np.random.normal(450 if is_threat else 25, 10)), 1),
+            "destination_port": 3389 if is_threat and random.random() < 0.6 else random.choice([80, 443, 53, 8080]),
+            "source_ip": f"192.168.1.{random.randint(2, 254)}",
+            "protocol": "TCP",
+            "tcp_urg_flag": 1 if (is_threat and random.random() < 0.4) else 0,
+            "threat_label": "Intrusion" if is_threat else "Benign",
+        })
+    df_parquet = pd.DataFrame(parquet_rows)
+    df_parquet.to_parquet(parquet_path, index=False)
+    print(f"Generated {len(df_parquet)} parquet rows -> {parquet_path}")
+
 
 if __name__ == "__main__":
     generate_samples()

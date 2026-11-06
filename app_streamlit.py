@@ -421,8 +421,8 @@ with tab_ingest:
     with col_up:
         uploaded_file = st.file_uploader(
             "Upload cybersecurity telemetry file:",
-            type=["csv", "json", "pdf", "pcap", "pcapng"],
-            help="Supported: CSV, JSON, PDF, and PCAP/PCAPNG network captures. Max 1 GB.",
+            type=["csv", "tsv", "json", "jsonl", "ndjson", "log", "txt", "syslog", "cef", "pdf", "pcap", "pcapng", "parquet"],
+            help="Supported: CSV, TSV, JSON, JSONL, Syslog/CEF logs, PDF, PCAP/PCAPNG, and Parquet data lakes. Max 1 GB.",
         )
 
     with col_samples:
@@ -434,6 +434,8 @@ with tab_ingest:
                 "Firewall logs (JSON)",
                 "Phishing telemetry (CSV)",
                 "Network capture (PCAP)",
+                "Auth & SSH logs (Syslog/LOG)",
+                "Security lake flows (Parquet)",
             ],
             index=0,
             label_visibility="collapsed",
@@ -446,6 +448,10 @@ with tab_ingest:
             sample_file_path = "data/samples/firewall_logs.json"
         elif "PCAP" in sample_choice:
             sample_file_path = "data/samples/network_traffic.pcap"
+        elif "Syslog" in sample_choice or "LOG" in sample_choice:
+            sample_file_path = "data/samples/auth_syslog.log"
+        elif "Parquet" in sample_choice:
+            sample_file_path = "data/samples/security_telemetry.parquet"
         else:
             sample_file_path = "data/samples/phishing_data.csv"
 

@@ -1,0 +1,250 @@
+Oct 24 14:29:57 core-router-01 sshd[8259]: Accepted publickey for sysadmin from 192.168.1.39 port 52411 ssh2
+Oct 24 14:48:51 vpn-gateway-01 sshd[2462]: Accepted publickey for sysadmin from 192.168.1.44 port 52411 ssh2
+Oct 24 14:36:57 dmz-firewall-02 sshd[8937]: Failed password for invalid user admin from 203.0.113.195 port 60886 ssh2
+Oct 24 14:14:29 vpn-gateway-01 sshd[9303]: Accepted publickey for sysadmin from 192.168.1.17 port 52411 ssh2
+Oct 24 14:22:13 core-router-01 sshd[5087]: Accepted publickey for sysadmin from 192.168.1.32 port 52411 ssh2
+Oct 24 14:33:55 core-router-01 sshd[4262]: Failed password for invalid user admin from 203.0.113.195 port 61188 ssh2
+Oct 24 14:50:17 dc-primary.internal sshd[1500]: Accepted publickey for sysadmin from 192.168.1.74 port 52411 ssh2
+Oct 24 14:38:21 dc-primary.internal sshd[8775]: Failed password for invalid user admin from 203.0.113.195 port 39955 ssh2
+Oct 24 14:26:57 vpn-gateway-01 sshd[2480]: Accepted publickey for sysadmin from 192.168.1.54 port 52411 ssh2
+Oct 24 14:46:59 dc-primary.internal sshd[4511]: Accepted publickey for sysadmin from 192.168.1.16 port 52411 ssh2
+Oct 24 14:51:36 dmz-firewall-02 sshd[9409]: Accepted publickey for sysadmin from 192.168.1.36 port 52411 ssh2
+Oct 24 14:18:51 core-router-01 sshd[3837]: Failed password for invalid user admin from 203.0.113.195 port 32094 ssh2
+Oct 24 14:48:29 core-router-01 sshd[5511]: Accepted publickey for sysadmin from 192.168.1.38 port 52411 ssh2
+Oct 24 14:26:23 dc-primary.internal sshd[8646]: Accepted publickey for sysadmin from 192.168.1.54 port 52411 ssh2
+Oct 24 14:42:52 dc-primary.internal sshd[7131]: Accepted publickey for sysadmin from 192.168.1.23 port 52411 ssh2
+Oct 24 14:40:14 vpn-gateway-01 sshd[6509]: Accepted publickey for sysadmin from 192.168.1.48 port 52411 ssh2
+Oct 24 14:51:55 vpn-gateway-01 sshd[5895]: Accepted publickey for sysadmin from 192.168.1.45 port 52411 ssh2
+Oct 24 14:13:48 dmz-firewall-02 sshd[7620]: Failed password for invalid user admin from 203.0.113.195 port 59985 ssh2
+Oct 24 14:28:26 dmz-firewall-02 sshd[7857]: Accepted publickey for sysadmin from 192.168.1.13 port 52411 ssh2
+Oct 24 14:56:55 core-router-01 sshd[4643]: Accepted publickey for sysadmin from 192.168.1.34 port 52411 ssh2
+Oct 24 14:20:52 dc-primary.internal sshd[3967]: Accepted publickey for sysadmin from 192.168.1.55 port 52411 ssh2
+Oct 24 14:56:45 dc-primary.internal sshd[3999]: Accepted publickey for sysadmin from 192.168.1.26 port 52411 ssh2
+Oct 24 14:32:24 vpn-gateway-01 sshd[6031]: Accepted publickey for sysadmin from 192.168.1.21 port 52411 ssh2
+Oct 24 14:47:28 vpn-gateway-01 sshd[8598]: Accepted publickey for sysadmin from 192.168.1.57 port 52411 ssh2
+Oct 24 14:40:22 dc-primary.internal sshd[9199]: Accepted publickey for sysadmin from 192.168.1.16 port 52411 ssh2
+Oct 24 14:29:36 dc-primary.internal sshd[1885]: Failed password for invalid user admin from 203.0.113.195 port 35747 ssh2
+Oct 24 14:31:36 dmz-firewall-02 sshd[8496]: Accepted publickey for sysadmin from 192.168.1.27 port 52411 ssh2
+Oct 24 14:15:41 dmz-firewall-02 sshd[6449]: Failed password for invalid user admin from 203.0.113.195 port 52072 ssh2
+Oct 24 14:10:38 dmz-firewall-02 sshd[5481]: Accepted publickey for sysadmin from 192.168.1.50 port 52411 ssh2
+Oct 24 14:58:20 dmz-firewall-02 sshd[9021]: Failed password for invalid user admin from 203.0.113.195 port 38791 ssh2
+Oct 24 14:50:37 core-router-01 sshd[7609]: Accepted publickey for sysadmin from 192.168.1.26 port 52411 ssh2
+Oct 24 14:12:44 dc-primary.internal sshd[4267]: Accepted publickey for sysadmin from 192.168.1.59 port 52411 ssh2
+Oct 24 14:11:53 core-router-01 sshd[1067]: Accepted publickey for sysadmin from 192.168.1.51 port 52411 ssh2
+Oct 24 14:29:18 dmz-firewall-02 sshd[2682]: Accepted publickey for sysadmin from 192.168.1.38 port 52411 ssh2
+Oct 24 14:12:29 vpn-gateway-01 sshd[5764]: Accepted publickey for sysadmin from 192.168.1.31 port 52411 ssh2
+Oct 24 14:31:41 vpn-gateway-01 sshd[6885]: Accepted publickey for sysadmin from 192.168.1.65 port 52411 ssh2
+Oct 24 14:24:24 dmz-firewall-02 sshd[3149]: Accepted publickey for sysadmin from 192.168.1.61 port 52411 ssh2
+Oct 24 14:42:20 core-router-01 sshd[3017]: Failed password for invalid user admin from 203.0.113.195 port 39670 ssh2
+Oct 24 14:59:44 core-router-01 sshd[1796]: Accepted publickey for sysadmin from 192.168.1.58 port 52411 ssh2
+Oct 24 14:13:54 core-router-01 sshd[2897]: Accepted publickey for sysadmin from 192.168.1.23 port 52411 ssh2
+Oct 24 14:40:54 dc-primary.internal sshd[3508]: Accepted publickey for sysadmin from 192.168.1.25 port 52411 ssh2
+Oct 24 14:36:52 core-router-01 sshd[2654]: Failed password for invalid user admin from 203.0.113.195 port 20757 ssh2
+Oct 24 14:16:42 vpn-gateway-01 sshd[2928]: Accepted publickey for sysadmin from 192.168.1.27 port 52411 ssh2
+Oct 24 14:48:22 core-router-01 sshd[5308]: Accepted publickey for sysadmin from 192.168.1.73 port 52411 ssh2
+Oct 24 14:28:20 dmz-firewall-02 sshd[1645]: Accepted publickey for sysadmin from 192.168.1.55 port 52411 ssh2
+Oct 24 14:25:10 dmz-firewall-02 sshd[1208]: Accepted publickey for sysadmin from 192.168.1.71 port 52411 ssh2
+Oct 24 14:15:59 core-router-01 sshd[9383]: Accepted publickey for sysadmin from 192.168.1.73 port 52411 ssh2
+Oct 24 14:26:51 core-router-01 sshd[4787]: Failed password for invalid user admin from 203.0.113.195 port 60319 ssh2
+Oct 24 14:13:16 vpn-gateway-01 sshd[3862]: Accepted publickey for sysadmin from 192.168.1.43 port 52411 ssh2
+Oct 24 14:37:57 vpn-gateway-01 sshd[2898]: Accepted publickey for sysadmin from 192.168.1.56 port 52411 ssh2
+Oct 24 14:18:52 core-router-01 sshd[3793]: Failed password for invalid user admin from 203.0.113.195 port 1657 ssh2
+Oct 24 14:33:31 dc-primary.internal sshd[3996]: Accepted publickey for sysadmin from 192.168.1.44 port 52411 ssh2
+Oct 24 14:39:27 dc-primary.internal sshd[7319]: Failed password for invalid user admin from 203.0.113.195 port 64089 ssh2
+Oct 24 14:17:18 dc-primary.internal sshd[1960]: Accepted publickey for sysadmin from 192.168.1.63 port 52411 ssh2
+Oct 24 14:47:40 dmz-firewall-02 sshd[8178]: Accepted publickey for sysadmin from 192.168.1.23 port 52411 ssh2
+Oct 24 14:32:49 dc-primary.internal sshd[1472]: Failed password for invalid user admin from 203.0.113.195 port 52087 ssh2
+Oct 24 14:17:36 dmz-firewall-02 sshd[8220]: Accepted publickey for sysadmin from 192.168.1.71 port 52411 ssh2
+Oct 24 14:30:10 vpn-gateway-01 sshd[9598]: Failed password for invalid user admin from 203.0.113.195 port 43948 ssh2
+Oct 24 14:37:52 dmz-firewall-02 sshd[5072]: Accepted publickey for sysadmin from 192.168.1.53 port 52411 ssh2
+Oct 24 14:10:51 dc-primary.internal sshd[3571]: Accepted publickey for sysadmin from 192.168.1.29 port 52411 ssh2
+Oct 24 14:14:58 dc-primary.internal sshd[9055]: Accepted publickey for sysadmin from 192.168.1.73 port 52411 ssh2
+Oct 24 14:42:24 vpn-gateway-01 sshd[7203]: Accepted publickey for sysadmin from 192.168.1.45 port 52411 ssh2
+Oct 24 14:38:46 dmz-firewall-02 sshd[8341]: Accepted publickey for sysadmin from 192.168.1.20 port 52411 ssh2
+Oct 24 14:30:17 dc-primary.internal sshd[9148]: Failed password for invalid user admin from 203.0.113.195 port 30323 ssh2
+Oct 24 14:36:12 core-router-01 sshd[9996]: Accepted publickey for sysadmin from 192.168.1.23 port 52411 ssh2
+Oct 24 14:48:49 core-router-01 sshd[5990]: Failed password for invalid user admin from 203.0.113.195 port 52914 ssh2
+Oct 24 14:33:13 dmz-firewall-02 sshd[4652]: Accepted publickey for sysadmin from 192.168.1.68 port 52411 ssh2
+Oct 24 14:55:38 vpn-gateway-01 sshd[2868]: Accepted publickey for sysadmin from 192.168.1.70 port 52411 ssh2
+Oct 24 14:31:32 dmz-firewall-02 sshd[5783]: Failed password for invalid user admin from 203.0.113.195 port 1167 ssh2
+Oct 24 14:20:41 vpn-gateway-01 sshd[3301]: Accepted publickey for sysadmin from 192.168.1.23 port 52411 ssh2
+Oct 24 14:49:22 dc-primary.internal sshd[4072]: Accepted publickey for sysadmin from 192.168.1.23 port 52411 ssh2
+Oct 24 14:39:22 dc-primary.internal sshd[6536]: Failed password for invalid user admin from 203.0.113.195 port 15152 ssh2
+Oct 24 14:50:53 dc-primary.internal sshd[3018]: Failed password for invalid user admin from 203.0.113.195 port 4071 ssh2
+Oct 24 14:41:10 dc-primary.internal sshd[9689]: Accepted publickey for sysadmin from 192.168.1.68 port 52411 ssh2
+Oct 24 14:54:47 dc-primary.internal sshd[3845]: Accepted publickey for sysadmin from 192.168.1.71 port 52411 ssh2
+Oct 24 14:52:48 dmz-firewall-02 sshd[6273]: Accepted publickey for sysadmin from 192.168.1.23 port 52411 ssh2
+Oct 24 14:27:35 dc-primary.internal sshd[6617]: Accepted publickey for sysadmin from 192.168.1.63 port 52411 ssh2
+Oct 24 14:36:48 dc-primary.internal sshd[9393]: Accepted publickey for sysadmin from 192.168.1.27 port 52411 ssh2
+Oct 24 14:22:23 vpn-gateway-01 sshd[5760]: Accepted publickey for sysadmin from 192.168.1.80 port 52411 ssh2
+Oct 24 14:55:17 dmz-firewall-02 sshd[6771]: Accepted publickey for sysadmin from 192.168.1.32 port 52411 ssh2
+Oct 24 14:37:10 dc-primary.internal sshd[9564]: Accepted publickey for sysadmin from 192.168.1.78 port 52411 ssh2
+Oct 24 14:13:52 dc-primary.internal sshd[1927]: Failed password for invalid user admin from 203.0.113.195 port 10548 ssh2
+Oct 24 14:28:53 dmz-firewall-02 sshd[5105]: Failed password for invalid user admin from 203.0.113.195 port 65480 ssh2
+Oct 24 14:28:23 core-router-01 sshd[9866]: Failed password for invalid user admin from 203.0.113.195 port 46282 ssh2
+Oct 24 14:49:53 dc-primary.internal sshd[4675]: Failed password for invalid user admin from 203.0.113.195 port 7740 ssh2
+Oct 24 14:54:52 dc-primary.internal sshd[1769]: Accepted publickey for sysadmin from 192.168.1.40 port 52411 ssh2
+Oct 24 14:45:13 dc-primary.internal sshd[1212]: Accepted publickey for sysadmin from 192.168.1.63 port 52411 ssh2
+Oct 24 14:50:55 dmz-firewall-02 sshd[7025]: Accepted publickey for sysadmin from 192.168.1.66 port 52411 ssh2
+Oct 24 14:38:21 dmz-firewall-02 sshd[2220]: Accepted publickey for sysadmin from 192.168.1.34 port 52411 ssh2
+Oct 24 14:42:17 dmz-firewall-02 sshd[7180]: Failed password for invalid user admin from 203.0.113.195 port 49198 ssh2
+Oct 24 14:26:18 vpn-gateway-01 sshd[3636]: Failed password for invalid user admin from 203.0.113.195 port 37501 ssh2
+Oct 24 14:39:55 vpn-gateway-01 sshd[3536]: Accepted publickey for sysadmin from 192.168.1.10 port 52411 ssh2
+Oct 24 14:13:59 vpn-gateway-01 sshd[5934]: Failed password for invalid user admin from 203.0.113.195 port 40141 ssh2
+Oct 24 14:43:24 vpn-gateway-01 sshd[4012]: Accepted publickey for sysadmin from 192.168.1.19 port 52411 ssh2
+Oct 24 14:15:32 dmz-firewall-02 sshd[4624]: Accepted publickey for sysadmin from 192.168.1.63 port 52411 ssh2
+Oct 24 14:28:23 vpn-gateway-01 sshd[9691]: Accepted publickey for sysadmin from 192.168.1.52 port 52411 ssh2
+Oct 24 14:38:25 core-router-01 sshd[4994]: Accepted publickey for sysadmin from 192.168.1.24 port 52411 ssh2
+Oct 24 14:34:26 vpn-gateway-01 sshd[9851]: Accepted publickey for sysadmin from 192.168.1.58 port 52411 ssh2
+Oct 24 14:42:42 core-router-01 sshd[8300]: Accepted publickey for sysadmin from 192.168.1.76 port 52411 ssh2
+Oct 24 14:42:15 vpn-gateway-01 sshd[2572]: Accepted publickey for sysadmin from 192.168.1.34 port 52411 ssh2
+Oct 24 14:14:23 core-router-01 sshd[4492]: Failed password for invalid user admin from 203.0.113.195 port 42110 ssh2
+Oct 24 14:44:54 dc-primary.internal sshd[8130]: Accepted publickey for sysadmin from 192.168.1.23 port 52411 ssh2
+Oct 24 14:39:55 core-router-01 sshd[6434]: Accepted publickey for sysadmin from 192.168.1.29 port 52411 ssh2
+Oct 24 14:21:26 core-router-01 sshd[2154]: Failed password for invalid user admin from 203.0.113.195 port 4580 ssh2
+Oct 24 14:34:38 dmz-firewall-02 sshd[7626]: Accepted publickey for sysadmin from 192.168.1.43 port 52411 ssh2
+Oct 24 14:44:10 core-router-01 sshd[2036]: Accepted publickey for sysadmin from 192.168.1.59 port 52411 ssh2
+Oct 24 14:42:16 core-router-01 sshd[5748]: Accepted publickey for sysadmin from 192.168.1.19 port 52411 ssh2
+Oct 24 14:58:38 vpn-gateway-01 sshd[7249]: Accepted publickey for sysadmin from 192.168.1.21 port 52411 ssh2
+Oct 24 14:44:24 core-router-01 sshd[3234]: Accepted publickey for sysadmin from 192.168.1.70 port 52411 ssh2
+Oct 24 14:53:56 vpn-gateway-01 sshd[7113]: Accepted publickey for sysadmin from 192.168.1.28 port 52411 ssh2
+Oct 24 14:17:12 core-router-01 sshd[1082]: Accepted publickey for sysadmin from 192.168.1.80 port 52411 ssh2
+Oct 24 14:29:23 dc-primary.internal sshd[6633]: Accepted publickey for sysadmin from 192.168.1.78 port 52411 ssh2
+Oct 24 14:21:24 dmz-firewall-02 sshd[5140]: Failed password for invalid user admin from 203.0.113.195 port 11572 ssh2
+Oct 24 14:46:13 dmz-firewall-02 sshd[9992]: Failed password for invalid user admin from 203.0.113.195 port 44997 ssh2
+Oct 24 14:26:16 core-router-01 sshd[4234]: Accepted publickey for sysadmin from 192.168.1.47 port 52411 ssh2
+Oct 24 14:18:52 dc-primary.internal sshd[4842]: Accepted publickey for sysadmin from 192.168.1.52 port 52411 ssh2
+Oct 24 14:22:30 core-router-01 sshd[8960]: Failed password for invalid user admin from 203.0.113.195 port 60014 ssh2
+Oct 24 14:30:37 vpn-gateway-01 sshd[3762]: Accepted publickey for sysadmin from 192.168.1.29 port 52411 ssh2
+Oct 24 14:24:55 dmz-firewall-02 sshd[8145]: Failed password for invalid user admin from 203.0.113.195 port 52513 ssh2
+Oct 24 14:40:39 vpn-gateway-01 sshd[8296]: Accepted publickey for sysadmin from 192.168.1.27 port 52411 ssh2
+Oct 24 14:21:51 vpn-gateway-01 sshd[2343]: Accepted publickey for sysadmin from 192.168.1.72 port 52411 ssh2
+Oct 24 14:26:56 dmz-firewall-02 sshd[2252]: Accepted publickey for sysadmin from 192.168.1.78 port 52411 ssh2
+Oct 24 14:47:47 core-router-01 sshd[7637]: Accepted publickey for sysadmin from 192.168.1.74 port 52411 ssh2
+Oct 24 14:44:44 dmz-firewall-02 sshd[8734]: Accepted publickey for sysadmin from 192.168.1.14 port 52411 ssh2
+Oct 24 14:24:59 dmz-firewall-02 sshd[5767]: Accepted publickey for sysadmin from 192.168.1.56 port 52411 ssh2
+Oct 24 14:33:42 core-router-01 sshd[1173]: Failed password for invalid user admin from 203.0.113.195 port 27027 ssh2
+Oct 24 14:38:20 dmz-firewall-02 sshd[3935]: Accepted publickey for sysadmin from 192.168.1.75 port 52411 ssh2
+Oct 24 14:12:24 dmz-firewall-02 sshd[8989]: Accepted publickey for sysadmin from 192.168.1.71 port 52411 ssh2
+Oct 24 14:24:12 vpn-gateway-01 sshd[4387]: Failed password for invalid user admin from 203.0.113.195 port 25235 ssh2
+Oct 24 14:39:12 vpn-gateway-01 sshd[1653]: Accepted publickey for sysadmin from 192.168.1.59 port 52411 ssh2
+Oct 24 14:57:26 vpn-gateway-01 sshd[9918]: Accepted publickey for sysadmin from 192.168.1.23 port 52411 ssh2
+Oct 24 14:47:51 dc-primary.internal sshd[2275]: Accepted publickey for sysadmin from 192.168.1.58 port 52411 ssh2
+Oct 24 14:32:32 dc-primary.internal sshd[8976]: Accepted publickey for sysadmin from 192.168.1.38 port 52411 ssh2
+Oct 24 14:38:20 core-router-01 sshd[4768]: Accepted publickey for sysadmin from 192.168.1.74 port 52411 ssh2
+Oct 24 14:19:21 vpn-gateway-01 sshd[3578]: Failed password for invalid user admin from 203.0.113.195 port 14885 ssh2
+Oct 24 14:31:56 core-router-01 sshd[2856]: Accepted publickey for sysadmin from 192.168.1.39 port 52411 ssh2
+Oct 24 14:47:20 dc-primary.internal sshd[7732]: Accepted publickey for sysadmin from 192.168.1.71 port 52411 ssh2
+Oct 24 14:46:47 core-router-01 sshd[3639]: Failed password for invalid user admin from 203.0.113.195 port 9405 ssh2
+Oct 24 14:46:19 core-router-01 sshd[1916]: Failed password for invalid user admin from 203.0.113.195 port 59403 ssh2
+Oct 24 14:35:48 dmz-firewall-02 sshd[1305]: Failed password for invalid user admin from 203.0.113.195 port 34882 ssh2
+Oct 24 14:38:48 vpn-gateway-01 sshd[8723]: Accepted publickey for sysadmin from 192.168.1.20 port 52411 ssh2
+Oct 24 14:48:19 dmz-firewall-02 sshd[3979]: Accepted publickey for sysadmin from 192.168.1.38 port 52411 ssh2
+Oct 24 14:39:48 vpn-gateway-01 sshd[2127]: Accepted publickey for sysadmin from 192.168.1.31 port 52411 ssh2
+Oct 24 14:16:11 dc-primary.internal sshd[4315]: Failed password for invalid user admin from 203.0.113.195 port 9688 ssh2
+Oct 24 14:21:40 dc-primary.internal sshd[1639]: Accepted publickey for sysadmin from 192.168.1.29 port 52411 ssh2
+Oct 24 14:52:18 core-router-01 sshd[9835]: Accepted publickey for sysadmin from 192.168.1.21 port 52411 ssh2
+Oct 24 14:33:12 dc-primary.internal sshd[9680]: Accepted publickey for sysadmin from 192.168.1.76 port 52411 ssh2
+Oct 24 14:47:57 dc-primary.internal sshd[2600]: Accepted publickey for sysadmin from 192.168.1.58 port 52411 ssh2
+Oct 24 14:15:28 vpn-gateway-01 sshd[9908]: Accepted publickey for sysadmin from 192.168.1.71 port 52411 ssh2
+Oct 24 14:46:43 dmz-firewall-02 sshd[2930]: Accepted publickey for sysadmin from 192.168.1.10 port 52411 ssh2
+Oct 24 14:36:33 dc-primary.internal sshd[2746]: Accepted publickey for sysadmin from 192.168.1.36 port 52411 ssh2
+Oct 24 14:44:37 vpn-gateway-01 sshd[6990]: Failed password for invalid user admin from 203.0.113.195 port 18148 ssh2
+Oct 24 14:45:45 dc-primary.internal sshd[8904]: Accepted publickey for sysadmin from 192.168.1.36 port 52411 ssh2
+Oct 24 14:29:46 dc-primary.internal sshd[6641]: Failed password for invalid user admin from 203.0.113.195 port 17655 ssh2
+Oct 24 14:57:24 dc-primary.internal sshd[8317]: Accepted publickey for sysadmin from 192.168.1.27 port 52411 ssh2
+Oct 24 14:42:35 dmz-firewall-02 sshd[6544]: Accepted publickey for sysadmin from 192.168.1.22 port 52411 ssh2
+Oct 24 14:50:10 core-router-01 sshd[2492]: Accepted publickey for sysadmin from 192.168.1.30 port 52411 ssh2
+Oct 24 14:14:26 dc-primary.internal sshd[4633]: Accepted publickey for sysadmin from 192.168.1.65 port 52411 ssh2
+Oct 24 14:49:51 core-router-01 sshd[9536]: Accepted publickey for sysadmin from 192.168.1.59 port 52411 ssh2
+Oct 24 14:38:10 core-router-01 sshd[4304]: Accepted publickey for sysadmin from 192.168.1.32 port 52411 ssh2
+Oct 24 14:48:42 vpn-gateway-01 sshd[9451]: Accepted publickey for sysadmin from 192.168.1.34 port 52411 ssh2
+Oct 24 14:25:51 dmz-firewall-02 sshd[1004]: Accepted publickey for sysadmin from 192.168.1.14 port 52411 ssh2
+Oct 24 14:32:52 core-router-01 sshd[7474]: Accepted publickey for sysadmin from 192.168.1.45 port 52411 ssh2
+Oct 24 14:57:55 dmz-firewall-02 sshd[2124]: Accepted publickey for sysadmin from 192.168.1.76 port 52411 ssh2
+Oct 24 14:27:24 vpn-gateway-01 sshd[4187]: Accepted publickey for sysadmin from 192.168.1.54 port 52411 ssh2
+Oct 24 14:21:36 dc-primary.internal sshd[9294]: Accepted publickey for sysadmin from 192.168.1.10 port 52411 ssh2
+Oct 24 14:28:31 core-router-01 sshd[2917]: Failed password for invalid user admin from 203.0.113.195 port 33999 ssh2
+Oct 24 14:54:38 vpn-gateway-01 sshd[7178]: Accepted publickey for sysadmin from 192.168.1.78 port 52411 ssh2
+Oct 24 14:53:39 dmz-firewall-02 sshd[1448]: Accepted publickey for sysadmin from 192.168.1.53 port 52411 ssh2
+Oct 24 14:50:24 vpn-gateway-01 sshd[4767]: Accepted publickey for sysadmin from 192.168.1.18 port 52411 ssh2
+Oct 24 14:54:26 dc-primary.internal sshd[5067]: Accepted publickey for sysadmin from 192.168.1.55 port 52411 ssh2
+Oct 24 14:45:21 dc-primary.internal sshd[8807]: Accepted publickey for sysadmin from 192.168.1.53 port 52411 ssh2
+Oct 24 14:57:53 dmz-firewall-02 sshd[4115]: Accepted publickey for sysadmin from 192.168.1.44 port 52411 ssh2
+Oct 24 14:26:23 dmz-firewall-02 sshd[4755]: Accepted publickey for sysadmin from 192.168.1.40 port 52411 ssh2
+Oct 24 14:49:32 dmz-firewall-02 sshd[3555]: Failed password for invalid user admin from 203.0.113.195 port 55834 ssh2
+Oct 24 14:49:10 core-router-01 sshd[9871]: Accepted publickey for sysadmin from 192.168.1.20 port 52411 ssh2
+Oct 24 14:41:46 dc-primary.internal sshd[5501]: Accepted publickey for sysadmin from 192.168.1.57 port 52411 ssh2
+Oct 24 14:58:46 vpn-gateway-01 sshd[3101]: Accepted publickey for sysadmin from 192.168.1.60 port 52411 ssh2
+Oct 24 14:44:12 dc-primary.internal sshd[9232]: Failed password for invalid user admin from 203.0.113.195 port 32371 ssh2
+Oct 24 14:54:43 dmz-firewall-02 sshd[8537]: Accepted publickey for sysadmin from 192.168.1.68 port 52411 ssh2
+Oct 24 14:34:47 core-router-01 sshd[2650]: Accepted publickey for sysadmin from 192.168.1.11 port 52411 ssh2
+Oct 24 14:25:27 vpn-gateway-01 sshd[8722]: Accepted publickey for sysadmin from 192.168.1.33 port 52411 ssh2
+Oct 24 14:41:37 vpn-gateway-01 sshd[4449]: Accepted publickey for sysadmin from 192.168.1.56 port 52411 ssh2
+Oct 24 14:27:38 vpn-gateway-01 sshd[3947]: Accepted publickey for sysadmin from 192.168.1.56 port 52411 ssh2
+Oct 24 14:25:45 dmz-firewall-02 sshd[8081]: Accepted publickey for sysadmin from 192.168.1.22 port 52411 ssh2
+Oct 24 14:40:10 dmz-firewall-02 sshd[3893]: Accepted publickey for sysadmin from 192.168.1.28 port 52411 ssh2
+Oct 24 14:41:29 dmz-firewall-02 sshd[5111]: Accepted publickey for sysadmin from 192.168.1.76 port 52411 ssh2
+Oct 24 14:54:20 core-router-01 sshd[1983]: Accepted publickey for sysadmin from 192.168.1.60 port 52411 ssh2
+Oct 24 14:50:16 vpn-gateway-01 sshd[8370]: Failed password for invalid user admin from 203.0.113.195 port 32254 ssh2
+Oct 24 14:45:45 vpn-gateway-01 sshd[5222]: Accepted publickey for sysadmin from 192.168.1.56 port 52411 ssh2
+Oct 24 14:53:48 dc-primary.internal sshd[4259]: Accepted publickey for sysadmin from 192.168.1.25 port 52411 ssh2
+Oct 24 14:30:53 dmz-firewall-02 sshd[9363]: Accepted publickey for sysadmin from 192.168.1.46 port 52411 ssh2
+Oct 24 14:49:28 dc-primary.internal sshd[8598]: Accepted publickey for sysadmin from 192.168.1.20 port 52411 ssh2
+Oct 24 14:36:50 dmz-firewall-02 sshd[7631]: Accepted publickey for sysadmin from 192.168.1.31 port 52411 ssh2
+Oct 24 14:31:24 core-router-01 sshd[6136]: Accepted publickey for sysadmin from 192.168.1.20 port 52411 ssh2
+Oct 24 14:27:38 vpn-gateway-01 sshd[6950]: Accepted publickey for sysadmin from 192.168.1.44 port 52411 ssh2
+Oct 24 14:21:11 dc-primary.internal sshd[3048]: Accepted publickey for sysadmin from 192.168.1.62 port 52411 ssh2
+Oct 24 14:20:35 vpn-gateway-01 sshd[2687]: Accepted publickey for sysadmin from 192.168.1.20 port 52411 ssh2
+Oct 24 14:13:11 dc-primary.internal sshd[7504]: Failed password for invalid user admin from 203.0.113.195 port 36966 ssh2
+Oct 24 14:49:19 core-router-01 sshd[2381]: Accepted publickey for sysadmin from 192.168.1.23 port 52411 ssh2
+Oct 24 14:25:57 dc-primary.internal sshd[5655]: Accepted publickey for sysadmin from 192.168.1.49 port 52411 ssh2
+Oct 24 14:11:12 dmz-firewall-02 sshd[6846]: Accepted publickey for sysadmin from 192.168.1.26 port 52411 ssh2
+Oct 24 14:44:27 vpn-gateway-01 sshd[9987]: Accepted publickey for sysadmin from 192.168.1.70 port 52411 ssh2
+Oct 24 14:43:50 dmz-firewall-02 sshd[9745]: Accepted publickey for sysadmin from 192.168.1.68 port 52411 ssh2
+Oct 24 14:15:38 vpn-gateway-01 sshd[6044]: Accepted publickey for sysadmin from 192.168.1.71 port 52411 ssh2
+Oct 24 14:10:10 vpn-gateway-01 sshd[9574]: Accepted publickey for sysadmin from 192.168.1.29 port 52411 ssh2
+Oct 24 14:40:44 dmz-firewall-02 sshd[1136]: Accepted publickey for sysadmin from 192.168.1.54 port 52411 ssh2
+Oct 24 14:10:59 dc-primary.internal sshd[8052]: Accepted publickey for sysadmin from 192.168.1.71 port 52411 ssh2
+Oct 24 14:22:36 dmz-firewall-02 sshd[8161]: Accepted publickey for sysadmin from 192.168.1.10 port 52411 ssh2
+Oct 24 14:24:26 dmz-firewall-02 sshd[2297]: Accepted publickey for sysadmin from 192.168.1.59 port 52411 ssh2
+Oct 24 14:28:51 dmz-firewall-02 sshd[9715]: Accepted publickey for sysadmin from 192.168.1.76 port 52411 ssh2
+Oct 24 14:21:18 dc-primary.internal sshd[5744]: Accepted publickey for sysadmin from 192.168.1.34 port 52411 ssh2
+Oct 24 14:38:27 dc-primary.internal sshd[9060]: Failed password for invalid user admin from 203.0.113.195 port 41507 ssh2
+Oct 24 14:13:44 core-router-01 sshd[1362]: Failed password for invalid user admin from 203.0.113.195 port 10995 ssh2
+Oct 24 14:27:18 core-router-01 sshd[8183]: Failed password for invalid user admin from 203.0.113.195 port 19512 ssh2
+Oct 24 14:10:41 dmz-firewall-02 sshd[4558]: Accepted publickey for sysadmin from 192.168.1.21 port 52411 ssh2
+Oct 24 14:39:54 vpn-gateway-01 sshd[1519]: Accepted publickey for sysadmin from 192.168.1.73 port 52411 ssh2
+Oct 24 14:59:35 dmz-firewall-02 sshd[2169]: Accepted publickey for sysadmin from 192.168.1.17 port 52411 ssh2
+Oct 24 14:34:10 dmz-firewall-02 sshd[2998]: Accepted publickey for sysadmin from 192.168.1.34 port 52411 ssh2
+Oct 24 14:25:57 dmz-firewall-02 sshd[1549]: Accepted publickey for sysadmin from 192.168.1.59 port 52411 ssh2
+Oct 24 14:52:23 core-router-01 sshd[8746]: Failed password for invalid user admin from 203.0.113.195 port 35177 ssh2
+Oct 24 14:50:56 vpn-gateway-01 sshd[1691]: Accepted publickey for sysadmin from 192.168.1.51 port 52411 ssh2
+Oct 24 14:50:29 core-router-01 sshd[4255]: Accepted publickey for sysadmin from 192.168.1.42 port 52411 ssh2
+Oct 24 14:25:50 core-router-01 sshd[8113]: Accepted publickey for sysadmin from 192.168.1.37 port 52411 ssh2
+Oct 24 14:35:25 dmz-firewall-02 sshd[1146]: Accepted publickey for sysadmin from 192.168.1.45 port 52411 ssh2
+Oct 24 14:59:15 dc-primary.internal sshd[5075]: Accepted publickey for sysadmin from 192.168.1.29 port 52411 ssh2
+Oct 24 14:49:31 core-router-01 sshd[1983]: Failed password for invalid user admin from 203.0.113.195 port 45978 ssh2
+Oct 24 14:44:16 dmz-firewall-02 sshd[3061]: Failed password for invalid user admin from 203.0.113.195 port 46986 ssh2
+Oct 24 14:56:22 vpn-gateway-01 sshd[1349]: Accepted publickey for sysadmin from 192.168.1.54 port 52411 ssh2
+Oct 24 14:12:41 vpn-gateway-01 sshd[8168]: Accepted publickey for sysadmin from 192.168.1.27 port 52411 ssh2
+Oct 24 14:44:32 dc-primary.internal sshd[6303]: Accepted publickey for sysadmin from 192.168.1.34 port 52411 ssh2
+Oct 24 14:14:43 vpn-gateway-01 sshd[3539]: Accepted publickey for sysadmin from 192.168.1.80 port 52411 ssh2
+Oct 24 14:39:10 vpn-gateway-01 sshd[9289]: Accepted publickey for sysadmin from 192.168.1.79 port 52411 ssh2
+Oct 24 14:59:49 dmz-firewall-02 sshd[4912]: Accepted publickey for sysadmin from 192.168.1.12 port 52411 ssh2
+Oct 24 14:22:43 core-router-01 sshd[9151]: Accepted publickey for sysadmin from 192.168.1.78 port 52411 ssh2
+Oct 24 14:36:51 dmz-firewall-02 sshd[6276]: Accepted publickey for sysadmin from 192.168.1.46 port 52411 ssh2
+Oct 24 14:18:21 core-router-01 sshd[1512]: Failed password for invalid user admin from 203.0.113.195 port 3892 ssh2
+Oct 24 14:16:12 dc-primary.internal sshd[7366]: Failed password for invalid user admin from 203.0.113.195 port 13581 ssh2
+Oct 24 14:24:48 vpn-gateway-01 sshd[2161]: Accepted publickey for sysadmin from 192.168.1.16 port 52411 ssh2
+Oct 24 14:41:15 dmz-firewall-02 sshd[8668]: Failed password for invalid user admin from 203.0.113.195 port 43999 ssh2
+Oct 24 14:33:55 core-router-01 sshd[1955]: Accepted publickey for sysadmin from 192.168.1.56 port 52411 ssh2
+Oct 24 14:56:14 vpn-gateway-01 sshd[5979]: Accepted publickey for sysadmin from 192.168.1.77 port 52411 ssh2
+Oct 24 14:43:16 dmz-firewall-02 sshd[2658]: Failed password for invalid user admin from 203.0.113.195 port 63977 ssh2
+Oct 24 14:43:52 dc-primary.internal sshd[5075]: Accepted publickey for sysadmin from 192.168.1.34 port 52411 ssh2
+Oct 24 14:59:50 dmz-firewall-02 sshd[6864]: Accepted publickey for sysadmin from 192.168.1.63 port 52411 ssh2
+Oct 24 14:21:45 dc-primary.internal sshd[7579]: Accepted publickey for sysadmin from 192.168.1.23 port 52411 ssh2
+Oct 24 14:32:30 dmz-firewall-02 sshd[6319]: Accepted publickey for sysadmin from 192.168.1.78 port 52411 ssh2
+Oct 24 14:48:25 dc-primary.internal sshd[9939]: Accepted publickey for sysadmin from 192.168.1.65 port 52411 ssh2
+Oct 24 14:38:38 vpn-gateway-01 sshd[7505]: Failed password for invalid user admin from 203.0.113.195 port 24617 ssh2
+Oct 24 14:28:48 core-router-01 sshd[1267]: Failed password for invalid user admin from 203.0.113.195 port 65443 ssh2
