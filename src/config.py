@@ -8,8 +8,8 @@ from typing import Dict, FrozenSet, List
 class SecurityConfig:
     """Security configurations enforcing boundary defenses and safe in-memory processing."""
 
-    # Maximum permitted file upload size (50 Megabytes)
-    MAX_FILE_SIZE_BYTES: int = 50 * 1024 * 1024
+    # Maximum permitted file upload size (1 Gigabyte)
+    MAX_FILE_SIZE_BYTES: int = 1024 * 1024 * 1024
 
     # Permitted file extensions
     ALLOWED_EXTENSIONS: FrozenSet[str] = frozenset({"csv", "json", "pdf", "pcap", "pcapng"})

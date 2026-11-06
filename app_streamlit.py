@@ -137,82 +137,172 @@ THEME_CSS = f"""
     --status-danger: {'#E5484D' if active_theme == 'dark' else '#DC2626'};
 }}
 
-html, body, [class*="css"] {{
+/* Universal Base Resets */
+html, body, .stApp {{
     font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif !important;
     color: var(--text-primary) !important;
     background-color: var(--bg-base) !important;
     -webkit-font-smoothing: antialiased;
 }}
 
-.stApp {{
+/* Streamlit Header & Chrome */
+header[data-testid="stHeader"] {{
     background-color: var(--bg-base) !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+}}
+header[data-testid="stHeader"] * {{
+    color: var(--text-primary) !important;
+}}
+[data-testid="stDecoration"] {{
+    display: none !important;
 }}
 
+/* Sidebar */
 section[data-testid="stSidebar"] {{
     background-color: var(--bg-base) !important;
     border-right: 1px solid var(--border-subtle) !important;
 }}
+section[data-testid="stSidebar"] * {{
+    color: var(--text-primary) !important;
+}}
+section[data-testid="stSidebar"] hr {{
+    border-color: var(--border-subtle) !important;
+}}
+
+/* Universal Heading & Paragraph Contrast */
+h1, h2, h3, h4, h5, h6,
+.stApp h1, .stApp h2, .stApp h3, .stApp h4, .stApp h5, .stApp h6,
+[data-testid="stMarkdownContainer"] h1,
+[data-testid="stMarkdownContainer"] h2,
+[data-testid="stMarkdownContainer"] h3,
+[data-testid="stMarkdownContainer"] h4,
+[data-testid="stMarkdownContainer"] h5,
+[data-testid="stMarkdownContainer"] h6 {{
+    color: var(--text-primary) !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.02em !important;
+}}
+
+p, span, label,
+[data-testid="stMarkdownContainer"] p,
+[data-testid="stWidgetLabel"] label,
+[data-testid="stWidgetLabel"] span,
+[data-testid="stWidgetLabel"] p {{
+    color: var(--text-primary) !important;
+}}
+
+.stCaption, [data-testid="stCaptionContainer"], [data-testid="stCaptionContainer"] * {{
+    color: var(--text-muted) !important;
+}}
 
 /* Surface Card */
 .surface-card {{
-    background-color: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
-    border-radius: 6px;
-    padding: 16px 20px;
-    margin-bottom: 16px;
+    background-color: var(--bg-surface) !important;
+    border: 1px solid var(--border-subtle) !important;
+    border-radius: 6px !important;
+    padding: 16px 20px !important;
+    margin-bottom: 16px !important;
 }}
 
 /* Highlight Centerpiece (Evasion Resistance & Leaderboard) */
 .centerpiece-card {{
-    background-color: var(--bg-surface);
-    border: 1px solid var(--border-strong);
-    border-radius: 6px;
-    padding: 24px;
-    margin-bottom: 24px;
+    background-color: var(--bg-surface) !important;
+    border: 1px solid var(--border-strong) !important;
+    border-radius: 6px !important;
+    padding: 24px !important;
+    margin-bottom: 24px !important;
 }}
 
 .centerpiece-metric {{
-    font-size: 40px;
-    line-height: 44px;
-    font-weight: 600;
-    letter-spacing: -0.025em;
-    font-family: 'Geist Mono', monospace;
-    font-variant-numeric: tabular-nums;
-    color: var(--text-primary);
-    margin: 8px 0;
+    font-size: 40px !important;
+    line-height: 44px !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.025em !important;
+    font-family: 'Geist Mono', monospace !important;
+    font-variant-numeric: tabular-nums !important;
+    color: var(--text-primary) !important;
+    margin: 8px 0 !important;
 }}
 
 .slim-progress-track {{
-    width: 100%;
-    height: 4px;
-    background-color: var(--border-subtle);
-    border-radius: 2px;
-    overflow: hidden;
-    margin-top: 12px;
+    width: 100% !important;
+    height: 4px !important;
+    background-color: var(--border-subtle) !important;
+    border-radius: 2px !important;
+    overflow: hidden !important;
+    margin-top: 12px !important;
 }}
 
 .slim-progress-fill {{
-    height: 100%;
-    background-color: var(--accent);
-    border-radius: 2px;
+    height: 100% !important;
+    background-color: var(--accent) !important;
+    border-radius: 2px !important;
 }}
 
 /* Typography styles */
 .metric-num {{
-    font-size: 24px;
-    line-height: 28px;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    font-family: 'Geist Mono', monospace;
-    font-variant-numeric: tabular-nums;
-    color: var(--text-primary);
+    font-size: 24px !important;
+    line-height: 28px !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.02em !important;
+    font-family: 'Geist Mono', monospace !important;
+    font-variant-numeric: tabular-nums !important;
+    color: var(--text-primary) !important;
 }}
 
 .metric-meta {{
-    font-size: 13px;
-    line-height: 16px;
-    color: var(--text-muted);
-    font-weight: 500;
+    font-size: 13px !important;
+    line-height: 16px !important;
+    color: var(--text-muted) !important;
+    font-weight: 500 !important;
+}}
+
+/* File Uploader styling */
+[data-testid="stFileUploader"],
+[data-testid="stFileUploader"] section,
+[data-testid="stFileUploaderDropzone"],
+[data-testid="stFileUploader"] [data-testid="stFileUploaderDropzone"] {{
+    background-color: var(--bg-surface) !important;
+    border: 1px dashed var(--border-strong) !important;
+    border-radius: 6px !important;
+    color: var(--text-primary) !important;
+}}
+
+[data-testid="stFileUploader"] section * {{
+    color: var(--text-primary) !important;
+}}
+
+[data-testid="stFileUploader"] button {{
+    background-color: var(--bg-elevated) !important;
+    border: 1px solid var(--border-subtle) !important;
+    color: var(--text-primary) !important;
+    border-radius: 4px !important;
+}}
+
+/* Form Controls & Inputs */
+input, textarea, select, [data-baseweb="input"] {{
+    background-color: var(--bg-surface) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-subtle) !important;
+}}
+
+/* Alerts / Banners */
+div[data-testid="stAlert"] {{
+    background-color: var(--bg-surface) !important;
+    border: 1px solid var(--border-subtle) !important;
+    border-left: 3px solid var(--accent) !important;
+    color: var(--text-primary) !important;
+    border-radius: 6px !important;
+}}
+
+div[data-testid="stAlert"] * {{
+    color: var(--text-primary) !important;
+}}
+
+/* Radio and Checkbox controls */
+[data-testid="stRadio"] label,
+[data-testid="stCheckbox"] label {{
+    color: var(--text-primary) !important;
 }}
 
 /* Code & Telemetry */
@@ -224,21 +314,25 @@ code, pre {{
     border-radius: 4px !important;
 }}
 
-/* Clean Tabs without line shifts */
+/* Clean Tabs */
 .stTabs [data-baseweb="tab-list"] {{
-    gap: 8px;
-    background: transparent;
-    border-bottom: 1px solid var(--border-subtle);
-    padding: 0;
+    gap: 8px !important;
+    background: transparent !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+    padding: 0 !important;
 }}
 
 .stTabs [data-baseweb="tab"] {{
-    border-radius: 0;
-    color: var(--text-muted);
-    font-weight: 500;
-    font-size: 14px;
-    padding: 10px 16px;
-    background: transparent;
+    border-radius: 0 !important;
+    color: var(--text-muted) !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    padding: 10px 16px !important;
+    background: transparent !important;
+}}
+
+.stTabs [data-baseweb="tab"]:hover {{
+    color: var(--text-primary) !important;
 }}
 
 .stTabs [aria-selected="true"] {{
@@ -248,22 +342,22 @@ code, pre {{
 
 /* Buttons: sentence case, primary action uses confident blue */
 .stButton > button {{
-    background-color: var(--accent);
-    color: #FFFFFF;
-    font-weight: 500;
-    font-size: 14px;
-    border: 1px solid transparent;
-    border-radius: 6px;
-    padding: 8px 16px;
-    transition: opacity 150ms cubic-bezier(0.22, 1, 0.36, 1);
+    background-color: var(--accent) !important;
+    color: #FFFFFF !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    border: 1px solid transparent !important;
+    border-radius: 6px !important;
+    padding: 8px 16px !important;
+    transition: opacity 150ms cubic-bezier(0.22, 1, 0.36, 1) !important;
 }}
 .stButton > button:hover {{
-    opacity: 0.90;
-    color: #FFFFFF;
+    opacity: 0.90 !important;
+    color: #FFFFFF !important;
 }}
 .stButton > button:focus-visible {{
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
+    outline: 2px solid var(--accent) !important;
+    outline-offset: 2px !important;
 }}
 
 /* Dividers */
@@ -309,7 +403,7 @@ from src.utils.translations import (
 st.markdown(
     """
     <div style="margin-bottom: 24px;">
-        <h1 style="font-size: 28px; line-height: 32px; font-weight: 600; letter-spacing: -0.02em; margin: 0 0 6px 0;">
+        <h1 style="color: var(--text-primary); font-size: 28px; line-height: 32px; font-weight: 600; letter-spacing: -0.02em; margin: 0 0 6px 0;">
             Adversarial-resistant SecOps AutoML and neural arena
         </h1>
         <p style="margin: 0; font-size: 14px; color: var(--text-muted); line-height: 20px;">
@@ -345,7 +439,7 @@ with tab_ingest:
         uploaded_file = st.file_uploader(
             "Upload cybersecurity telemetry file:",
             type=["csv", "json", "pdf", "pcap", "pcapng"],
-            help="Supported: CSV, JSON, PDF, and PCAP/PCAPNG network captures. Max 50 MB.",
+            help="Supported: CSV, JSON, PDF, and PCAP/PCAPNG network captures. Max 1 GB.",
         )
 
     with col_samples:
