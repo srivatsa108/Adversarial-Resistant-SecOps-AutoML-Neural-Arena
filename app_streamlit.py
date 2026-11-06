@@ -161,6 +161,7 @@ from src.models.arena import ArenaResult, AutoMLArena
 from src.parsers.factory import ParserFactory
 from src.security.privacy import PrivacyMasker
 from src.security.validator import BufferValidator, SecurityValidationError
+from src.xai.explainer import SHAPExplainer
 from src.utils.plotting import (
     create_adversarial_decay_curve,
     create_anomaly_reconstruction_plot,
