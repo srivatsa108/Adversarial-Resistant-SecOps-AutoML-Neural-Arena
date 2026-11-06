@@ -9,19 +9,4 @@ enableXsrfProtection = true
 showErrorDetails = false
 
 [theme]
-base = "dark"
 font = "sans serif"
-
-[theme.light]
-primaryColor = "#2D5BFF"
-backgroundColor = "#F5F6F8"
-secondaryBackgroundColor = "#FFFFFF"
-textColor = "#0F1720"
-borderColor = "#E3E6EB"
-
-[theme.dark]
-primaryColor = "#5B8CFF"
-backgroundColor = "#0A0B0D"
-secondaryBackgroundColor = "#101215"
-textColor = "#ECEEF1"
-borderColor = "#1E2227"
