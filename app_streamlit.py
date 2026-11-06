@@ -302,7 +302,7 @@ tab_ingest, tab_arena, tab_adv_xai, tab_mitre = st.tabs([
 with tab_ingest:
     st.markdown("### 📥 Multi-Format Ingestion & Zero-Trust Cryptographic Anonymizer")
     st.write(
-        "Upload cybersecurity logs, network captures, or threat feeds in **CSV**, **JSON**, or **PDF** format. "
+        "Upload cybersecurity logs, network captures, or threat feeds in **CSV**, **JSON**, **PDF**, or raw **PCAP / PCAPNG** format. "
         "All bytes are parsed entirely in-memory (`io.BytesIO`) without temporary disk leaks."
     )
 
@@ -311,15 +311,20 @@ with tab_ingest:
     with col_up:
         uploaded_file = st.file_uploader(
             "Choose a cybersecurity telemetry file:",
-            type=["csv", "json", "pdf"],
-            help="Supported: CSV, JSON (records/arrays/ndjson), and PDF (tables & regex text mining). Max 50MB.",
+            type=["csv", "json", "pdf", "pcap", "pcapng"],
+            help="Supported: CSV, JSON (records/arrays/ndjson), PDF (tables & regex text mining), and PCAP/PCAPNG packet captures. Max 50MB.",
         )
 
     with col_samples:
         st.markdown("**Quick-Load Built-in Sample Datasets:**")
         sample_choice = st.radio(
             "Select a demo threat dataset:",
-            options=["None", "Firewall Logs (Unsupervised Anomaly)", "Phishing Data (Supervised Target)"],
+            options=[
+                "None",
+                "Firewall Logs (Unsupervised Anomaly)",
+                "Phishing Data (Supervised Target)",
+                "Network Packet Capture (PCAP Anomaly)",
+            ],
             index=0,
         )
 
@@ -329,6 +334,8 @@ with tab_ingest:
     if load_sample_btn and sample_choice != "None":
         if "Firewall" in sample_choice:
             sample_file_path = "data/samples/firewall_logs.json"
+        elif "PCAP" in sample_choice:
+            sample_file_path = "data/samples/network_traffic.pcap"
         else:
             sample_file_path = "data/samples/phishing_data.csv"
 

@@ -4,6 +4,7 @@ from typing import Dict, Type
 from src.interfaces.parser import BaseFileParser
 from src.parsers.csv_parser import CSVFileParser
 from src.parsers.json_parser import JSONFileParser
+from src.parsers.pcap_parser import PCAPFileParser
 from src.parsers.pdf_parser import PDFFileParser
 
 
@@ -14,6 +15,8 @@ class ParserFactory:
         "csv": CSVFileParser,
         "json": JSONFileParser,
         "pdf": PDFFileParser,
+        "pcap": PCAPFileParser,
+        "pcapng": PCAPFileParser,
     }
 
     @classmethod

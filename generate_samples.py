@@ -125,6 +125,54 @@ def generate_samples(output_dir: str = "data/samples") -> None:
         json.dump(logs, f, indent=2)
     print(f"Generated {len(logs)} firewall records -> {firewall_path}")
 
+    # ==========================================
+    # 3. Network PCAP Dataset: network_traffic.pcap
+    # ==========================================
+    pcap_path = os.path.join(output_dir, "network_traffic.pcap")
+    try:
+        from scapy.all import Ether, IP, TCP, UDP, Raw, wrpcap
+
+        packets = []
+        base_time = 1700000000.0
+
+        for idx in range(250):
+            is_anomaly = idx >= 230  # Last 20 packets are port scan / RDP flood anomalies
+            pkt_time = base_time + idx * 0.05
+
+            if not is_anomaly:
+                src_ip = random.choice(internal_ips)
+                dst_ip = random.choice(external_ips)
+                dport = random.choice([80, 443, 53])
+                sport = random.randint(1024, 65535)
+
+                if dport == 53:
+                    pkt = Ether(src="00:1B:44:11:3A:B7", dst="70:85:C2:55:A1:00") / \
+                          IP(src=src_ip, dst=dst_ip, ttl=64) / \
+                          UDP(sport=sport, dport=53) / \
+                          Raw(load=b"\x00\x01\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00\x07gateway\x04corp\x00\x00\x01\x00\x01")
+                else:
+                    pkt = Ether(src="00:1B:44:11:3A:B7", dst="70:85:C2:55:A1:00") / \
+                          IP(src=src_ip, dst=dst_ip, ttl=64) / \
+                          TCP(sport=sport, dport=dport, flags="PA") / \
+                          Raw(load=b"GET /index.html HTTP/1.1\r\nHost: corporate.internal\r\n\r\n")
+            else:
+                # Malicious SYN scan / RDP flood
+                src_ip = "192.168.1.50"
+                dst_ip = "198.51.100.44"
+                target_port = 3389 if idx % 2 == 0 else (1000 + idx * 10)
+                pkt = Ether(src="00:1B:44:11:3A:B7", dst="70:85:C2:55:A1:00") / \
+                      IP(src=src_ip, dst=dst_ip, ttl=48) / \
+                      TCP(sport=55442, dport=target_port, flags="S") / \
+                      Raw(load=b"\x00" * random.randint(500, 1500))
+
+            pkt.time = pkt_time
+            packets.append(pkt)
+
+        wrpcap(pcap_path, packets)
+        print(f"Generated {len(packets)} raw packets -> {pcap_path}")
+    except Exception as e:
+        print(f"Could not generate scapy PCAP: {e}")
+
 
 if __name__ == "__main__":
     generate_samples()

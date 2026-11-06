@@ -86,6 +86,15 @@ def test_parsers_in_memory():
     assert len(df_json) == 2
     assert "user" in df_json.columns
 
+    # PCAP parser
+    with open("data/samples/network_traffic.pcap", "rb") as f:
+        pcap_bytes = f.read()
+    pcap_parser = ParserFactory.get_parser("pcap")
+    df_pcap = pcap_parser.parse(io.BytesIO(pcap_bytes), "sample.pcap")
+    assert len(df_pcap) > 0
+    assert "destination_port" in df_pcap.columns
+    assert "packet_length" in df_pcap.columns
+
 
 def test_cleaner_junk_filtering():
     """Verify deduplication, zero-variance pruning, and dynamic imputation."""

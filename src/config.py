@@ -12,7 +12,7 @@ class SecurityConfig:
     MAX_FILE_SIZE_BYTES: int = 50 * 1024 * 1024
 
     # Permitted file extensions
-    ALLOWED_EXTENSIONS: FrozenSet[str] = frozenset({"csv", "json", "pdf"})
+    ALLOWED_EXTENSIONS: FrozenSet[str] = frozenset({"csv", "json", "pdf", "pcap", "pcapng"})
 
     # Permitted MIME types
     ALLOWED_MIME_TYPES: FrozenSet[str] = frozenset(
@@ -22,6 +22,9 @@ class SecurityConfig:
             "application/json",
             "application/pdf",
             "application/x-pdf",
+            "application/vnd.tcpdump.pcap",
+            "application/x-pcap",
+            "application/pcap",
             "application/octet-stream",
         }
     )
@@ -31,6 +34,13 @@ class SecurityConfig:
         default_factory=lambda: {
             "pdf": [b"%PDF-"],
             "json": [b"{", b"[", b" \t\r\n{", b" \t\r\n["],
+            "pcap": [
+                b"\xd4\xc3\xb2\xa1",
+                b"\xa1\xb2\xc3\xd4",
+                b"\x4d\x3c\xb2\xa1",
+                b"\xa1\xb2\x3c\x4d",
+            ],
+            "pcapng": [b"\x0a\x0d\x0d\x0a"],
         }
     )
 
