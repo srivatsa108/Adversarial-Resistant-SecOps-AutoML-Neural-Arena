@@ -54,22 +54,33 @@ class AdversarialRobustnessTester(BaseAdversarialTester):
 
         y_arr = y_test.values if isinstance(y_test, pd.Series) else np.array(y_test)
 
+        # Sample up to 300 rows for high-throughput perturbation benchmarking
+        if len(X_arr) > 300:
+            eval_idx = np.random.choice(len(X_arr), size=300, replace=False)
+            X_eval_arr = X_arr[eval_idx]
+            y_eval_arr = y_arr[eval_idx]
+            X_eval_df = X_test.iloc[eval_idx] if isinstance(X_test, pd.DataFrame) else pd.DataFrame(X_eval_arr)
+        else:
+            X_eval_arr = X_arr
+            y_eval_arr = y_arr
+            X_eval_df = X_test
+
         # Baseline predictions
-        base_preds = model.predict(X_test)
+        base_preds = model.predict(X_eval_df)
         try:
-            base_acc = float(accuracy_score(y_arr, base_preds))
-            base_f1 = float(f1_score(y_arr, base_preds, average="weighted", zero_division=0))
+            base_acc = float(accuracy_score(y_eval_arr, base_preds))
+            base_f1 = float(f1_score(y_eval_arr, base_preds, average="weighted", zero_division=0))
         except Exception:
             try:
                 from sklearn.metrics import r2_score
-                base_acc = max(0.0, float(r2_score(y_arr, base_preds)))
+                base_acc = max(0.0, float(r2_score(y_eval_arr, base_preds)))
                 base_f1 = base_acc
             except Exception:
                 # Discretize continuous predictions if targets are discrete
                 try:
                     rounded_preds = np.round(base_preds).astype(int)
-                    base_acc = float(accuracy_score(y_arr, rounded_preds))
-                    base_f1 = float(f1_score(y_arr, rounded_preds, average="weighted", zero_division=0))
+                    base_acc = float(accuracy_score(y_eval_arr, rounded_preds))
+                    base_f1 = float(f1_score(y_eval_arr, rounded_preds, average="weighted", zero_division=0))
                 except Exception:
                     base_acc = 0.85
                     base_f1 = 0.85
@@ -88,20 +99,18 @@ class AdversarialRobustnessTester(BaseAdversarialTester):
                 continue
 
             # Adversarial FGSM / Gaussian-bounded perturbation
-            # In normalized feature space (StandardScaler), noise is injected along feature variances
-            noise = np.random.laplace(loc=0.0, scale=eps, size=X_arr.shape)
-            # Clip perturbation magnitude to [-eps * 3, eps * 3]
-            perturbed_X = X_arr + np.clip(noise, -3.0 * eps, 3.0 * eps)
+            noise = np.random.laplace(loc=0.0, scale=eps, size=X_eval_arr.shape)
+            perturbed_X = X_eval_arr + np.clip(noise, -3.0 * eps, 3.0 * eps)
             perturbed_df = pd.DataFrame(perturbed_X, columns=X_test.columns)
 
             try:
                 pert_preds = model.predict(perturbed_df)
-                pert_acc = float(accuracy_score(y_arr, pert_preds))
-                pert_f1 = float(f1_score(y_arr, pert_preds, average="weighted", zero_division=0))
+                pert_acc = float(accuracy_score(y_eval_arr, pert_preds))
+                pert_f1 = float(f1_score(y_eval_arr, pert_preds, average="weighted", zero_division=0))
             except Exception:
                 try:
                     from sklearn.metrics import r2_score
-                    pert_acc = max(0.0, float(r2_score(y_arr, pert_preds)))
+                    pert_acc = max(0.0, float(r2_score(y_eval_arr, pert_preds)))
                     pert_f1 = pert_acc
                 except Exception:
                     pert_acc = max(0.0, base_acc - eps * 2.0)

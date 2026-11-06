@@ -162,8 +162,8 @@ class AutoMLArena:
 
         candidates: List[BaseModelTrainer] = [
             LogisticRegressionTrainer(random_state=self._random_state),
-            RandomForestClassifierTrainer(random_state=self._random_state),
-            XGBoostClassifierTrainer(random_state=self._random_state),
+            RandomForestClassifierTrainer(n_estimators=50, max_depth=10, random_state=self._random_state),
+            XGBoostClassifierTrainer(n_estimators=50, max_depth=5, random_state=self._random_state),
             DeepMLPClassifierTrainer(random_state=self._random_state),
         ]
 

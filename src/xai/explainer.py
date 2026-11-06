@@ -32,20 +32,23 @@ class SHAPExplainer(BaseExplainer):
         try:
             import shap
 
+            # Cap sample evaluation to 100 representative rows for sub-second execution
+            X_eval = X_sample.iloc[: min(100, len(X_sample))] if isinstance(X_sample, pd.DataFrame) else X_sample[: min(100, len(X_sample))]
+
             # Select appropriate SHAP Explainer
             model_type_str = str(type(raw_model)).lower()
             if any(k in model_type_str for k in ("forest", "tree", "xgb", "boost")):
                 explainer = shap.TreeExplainer(raw_model)
-                shap_values = explainer.shap_values(X_sample)
+                shap_values = explainer.shap_values(X_eval)
             elif "linear" in model_type_str or "ridge" in model_type_str or "logistic" in model_type_str:
-                explainer = shap.LinearExplainer(raw_model, X_sample)
-                shap_values = explainer.shap_values(X_sample)
+                explainer = shap.LinearExplainer(raw_model, X_eval)
+                shap_values = explainer.shap_values(X_eval)
             else:
-                # Neural Net or general model: KernelExplainer with background kmeans/sample
-                bg = shap.sample(X_sample, min(self._background_samples, len(X_sample)))
+                # Neural Net or general model: KernelExplainer with background sample
+                bg = shap.sample(X_eval, min(self._background_samples, len(X_eval)))
                 predict_fn = getattr(model, "predict_proba", None) or getattr(model, "predict")
                 explainer = shap.KernelExplainer(predict_fn, bg)
-                shap_values = explainer.shap_values(X_sample.iloc[: min(25, len(X_sample))])
+                shap_values = explainer.shap_values(X_eval.iloc[: min(20, len(X_eval))])
 
             # Process multiclass or 3D SHAP outputs
             if isinstance(shap_values, list):

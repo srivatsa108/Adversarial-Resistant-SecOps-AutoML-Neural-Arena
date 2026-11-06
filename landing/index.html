@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AegisOps • Automated threat modeling for security engineers</title>
+  <title>Adversa • Automated threat modeling for security engineers</title>
   <meta name="description" content="Train defensive neural networks on local log telemetry, test evasion resistance under synthetic noise, and generate copy ready Snort, YARA, and iptables rules.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23181818'/><path d='M16 6 L26 11 L26 21 L16 26 L6 21 L6 11 Z' stroke='%23ffffff' stroke-width='2' fill='none'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -866,7 +866,7 @@
     <nav class="floating-nav" aria-label="Main Navigation">
       <a href="#" class="brand-mark">
         <i class="ph ph-shield-check" style="font-size: 20px;"></i>
-        <span>AegisOps</span>
+        <span>Adversa</span>
       </a>
       <ul class="nav-links">
         <li><a href="#benefits" class="nav-link">Benefits</a></li>
@@ -900,7 +900,7 @@
         </h1>
 
         <p class="body-2 hero-subhead">
-          AegisOps runs local deep learning and automated adversarial noise injection over your firewall, PCAP, and authentication logs without transmitting internal hostnames or IP addresses.
+          Adversa runs local deep learning and automated adversarial noise injection over your firewall, PCAP, and authentication logs without transmitting internal hostnames or IP addresses.
         </p>
 
         <div class="hero-ctas">
@@ -925,7 +925,7 @@
             <div class="dashboard-header-bar">
               <div class="dashboard-title-group">
                 <span class="status-dot"></span>
-                <span class="title-4" style="color: var(--text-primary);">AegisOps Arena v1.0.0</span>
+                <span class="title-4" style="color: var(--text-primary);">Adversa Arena v1.0.0</span>
                 <span class="caption-4" style="background: rgba(0, 229, 255, 0.1); color: var(--accent-blue); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(0, 229, 255, 0.25);">
                   Active Telemetry: network_traffic.pcap (250 packets)
                 </span>
@@ -1058,7 +1058,7 @@ sudo iptables -A INPUT -p tcp --dport 3389 -m recent --update --seconds 60 --hit
             </p>
           </div>
           <div class="card">
-            <span class="caption-4" style="color: #46A758;">AegisOps automated arena</span>
+            <span class="caption-4" style="color: #46A758;">Adversa automated arena</span>
             <h3 class="title-1">Adversarially hardened defenses</h3>
             <p class="body-3">
               Neural autoencoders score reconstruction errors on unseen traffic patterns. Synthetic noise injection measures exactly how much variation your defensive boundaries withstand before breaking.
@@ -1180,7 +1180,7 @@ sudo iptables -A INPUT -p tcp --dport 3389 -m recent --update --seconds 60 --hit
             </div>
             <div class="faq-answer">
               <p class="body-6">
-                AegisOps features a deterministic cyber heuristic engine that synthesizes complete YARA, Snort, and iptables rules offline without calling any cloud service.
+                Adversa features a deterministic cyber heuristic engine that synthesizes complete YARA, Snort, and iptables rules offline without calling any cloud service.
               </p>
             </div>
           </div>
@@ -1244,7 +1244,7 @@ sudo iptables -A INPUT -p tcp --dport 3389 -m recent --update --seconds 60 --hit
     <div class="container footer-grid">
       <div style="display: flex; align-items: center; gap: var(--sp-100);">
         <i class="ph ph-shield-check" style="font-size: 20px;"></i>
-        <span class="caption-2">© 2026 AegisOps SecOps AI Project</span>
+        <span class="caption-2">© 2026 Adversa SecOps AI Project</span>
       </div>
       <ul class="footer-links">
         <li><a href="https://github.com/srivatsa108/Adversarial-Resistant-SecOps-AutoML-Neural-Arena/blob/main/LICENSE" class="footer-link">MIT License</a></li>
@@ -1431,7 +1431,7 @@ sudo iptables -A INPUT -p tcp --dport 3389 -m recent --update --seconds 60 --hit
     function initTheme() {
       let savedTheme = 'system';
       try {
-        savedTheme = localStorage.getItem('aegisops_theme') || 'system';
+        savedTheme = localStorage.getItem('adversa_theme') || 'system';
       } catch (e) {
         savedTheme = 'system';
       }
@@ -1441,7 +1441,7 @@ sudo iptables -A INPUT -p tcp --dport 3389 -m recent --update --seconds 60 --hit
       try {
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
           let current = 'system';
-          try { current = localStorage.getItem('aegisops_theme') || 'system'; } catch (e) {}
+          try { current = localStorage.getItem('adversa_theme') || 'system'; } catch (e) {}
           if (current === 'system') {
             applyTheme('system');
           }
@@ -1454,7 +1454,7 @@ sudo iptables -A INPUT -p tcp --dport 3389 -m recent --update --seconds 60 --hit
           const mode = btn.getAttribute('data-theme');
           applyTheme(mode);
           try {
-            localStorage.setItem('aegisops_theme', mode);
+            localStorage.setItem('adversa_theme', mode);
           } catch (e) {}
         });
       });

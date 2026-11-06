@@ -1,4 +1,4 @@
-# Project Submission: AegisOps - Adversarial-Resistant SecOps AutoML & Neural Arena
+# Project Submission: Adversa - Adversarial-Resistant SecOps AutoML & Neural Arena
 
 **GitHub Repository:** https://github.com/srivatsa108/Adversarial-Resistant-SecOps-AutoML-Neural-Arena
 **Primary Author:** Srivatsa (https://github.com/srivatsa108)
@@ -11,7 +11,7 @@
 
 Classical intrusion detection systems and rule-based firewalls rely on static signatures that attackers evade by slightly changing packet sizes, entropy or request timing. Cloud-based machine learning avoids that, but sends raw internal network data to third parties, which creates GDPR and SOC 2 liability.
 
-AegisOps is an open-source AutoML and deep neural network platform built for cybersecurity telemetry. It runs entirely in memory (`io.BytesIO`) with no temporary files, masks sensitive entities before any model sees them, stress-tests models against adversarial noise, explains decisions with SHAP, and generates Snort, YARA and iptables rules mapped to MITRE ATT&CK.
+Adversa is an open-source AutoML and deep neural network platform built for cybersecurity telemetry. It runs entirely in memory (`io.BytesIO`) with no temporary files, masks sensitive entities before any model sees them, stress-tests models against adversarial noise, explains decisions with SHAP, and generates Snort, YARA and iptables rules mapped to MITRE ATT&CK.
 
 ---
 

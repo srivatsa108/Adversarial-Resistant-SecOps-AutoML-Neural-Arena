@@ -63,7 +63,7 @@ class PCAPFileParser(BaseFileParser):
             first_ts: Optional[float] = None
 
             for idx, pkt in enumerate(pcap_reader):
-                if idx >= 5000:  # Cap parsing to 5,000 packets for rapid AutoML execution
+                if idx >= 2500:  # Cap parsing to 2,500 packets for rapid AutoML execution
                     break
 
                 ts = float(pkt.time)

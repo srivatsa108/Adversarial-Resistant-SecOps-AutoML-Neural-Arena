@@ -12,6 +12,7 @@ from typing import Any, Dict, List, Optional
 from src.config import GLOBAL_CONFIG
 from src.interfaces.mitre import BaseMitreRuleGenerator
 from src.security.privacy import PrivacyMasker
+from src.utils.providers import PROVIDERS, key_from_environment
 
 
 class MitreRuleGenerator(BaseMitreRuleGenerator):
@@ -27,6 +28,9 @@ class MitreRuleGenerator(BaseMitreRuleGenerator):
         anomalies_sample: Optional[List[Dict[str, Any]]] = None,
         robustness_metrics: Optional[Dict[str, Any]] = None,
         api_key: Optional[str] = None,
+        provider: str = "Google Gemini",
+        model: Optional[str] = None,
+        base_url: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Generate MITRE ATT&CK mappings and production defensive rules."""
         # 1. Package sanitized JSON payload
@@ -41,17 +45,17 @@ class MitreRuleGenerator(BaseMitreRuleGenerator):
         sanitized_payload_str = self._masker.mask_text(json.dumps(raw_payload, default=str))
         sanitized_payload = json.loads(sanitized_payload_str)
 
-        # 2. Check for Gemini API key
-        active_key = api_key or os.getenv("GEMINI_API_KEY")
+        # 2. Use the chosen provider when a key is available
+        active_key = api_key or key_from_environment(provider)
 
         if active_key and active_key.strip():
             try:
-                ai_output = self._generate_with_gemini(sanitized_payload, active_key.strip())
+                ai_output = self._generate_with_llm(sanitized_payload, active_key.strip(), provider, model, base_url)
                 if ai_output:
-                    ai_output["generator_mode"] = "Threat Intelligence Agent (Gemini API)"
+                    ai_output["generator_mode"] = f"Threat intelligence agent ({provider})"
                     return ai_output
-            except Exception as e:
-                # Fall back to local rule engine if API fails or quota exceeded
+            except Exception:
+                # Fall back to the local rule engine if the API fails or quota is exceeded
                 pass
 
         # 3. Deterministic Local Heuristic Cyber Engine Fallback
@@ -59,9 +63,9 @@ class MitreRuleGenerator(BaseMitreRuleGenerator):
         local_output["generator_mode"] = "Local Cyber Heuristic Synthesis Engine"
         return local_output
 
-    def _generate_with_gemini(self, payload: Dict[str, Any], api_key: str) -> Optional[Dict[str, Any]]:
-        """Query Gemini API via google-genai SDK or direct REST interface."""
-        prompt = (
+    @staticmethod
+    def _build_prompt(payload: Dict[str, Any]) -> str:
+        return (
             "You are a Principal Cyber Defense Engineer and Threat Intelligence Specialist. "
             "Analyze this sanitized ML model decision boundary, SHAP feature explanations, "
             "and cybersecurity anomaly payload:\n\n"
@@ -79,24 +83,64 @@ class MitreRuleGenerator(BaseMitreRuleGenerator):
             "Return ONLY the JSON object without markdown fences or additional prose."
         )
 
+    @staticmethod
+    def _parse_json_reply(text: str) -> Optional[Dict[str, Any]]:
+        text = text.strip()
+        if text.startswith("```"):
+            text = re.sub(r"^```[a-zA-Z]*\n", "", text)
+            text = re.sub(r"\n```$", "", text).strip()
+        return json.loads(text)
+
+    def _generate_with_llm(
+        self,
+        payload: Dict[str, Any],
+        api_key: str,
+        provider: str,
+        model: Optional[str],
+        base_url: Optional[str],
+    ) -> Optional[Dict[str, Any]]:
+        """Send the sanitized payload to the selected provider and return parsed JSON."""
+        cfg = PROVIDERS.get(provider, PROVIDERS["Google Gemini"])
+        kind = cfg["kind"]
+        model = (model or str(cfg["model"])).strip()
+        url = (base_url or str(cfg["base_url"])).strip().rstrip("/")
+        prompt = self._build_prompt(payload)
         try:
-            from google import genai
+            if kind == "gemini":
+                from google import genai
 
-            client = genai.Client(api_key=api_key)
-            response = client.models.generate_content(
-                model=GLOBAL_CONFIG.DEFAULT_GEMINI_MODEL,
-                contents=prompt,
+                client = genai.Client(api_key=api_key)
+                reply = client.models.generate_content(model=model or GLOBAL_CONFIG.DEFAULT_GEMINI_MODEL, contents=prompt)
+                return self._parse_json_reply(reply.text)
+
+            import requests
+
+            if kind == "anthropic":
+                r = requests.post(
+                    f"{url}/v1/messages",
+                    headers={"x-api-key": api_key, "anthropic-version": "2023-06-01", "content-type": "application/json"},
+                    json={"model": model, "max_tokens": 4000, "messages": [{"role": "user", "content": prompt}]},
+                    timeout=60,
+                )
+                r.raise_for_status()
+                return self._parse_json_reply(r.json()["content"][0]["text"])
+
+            if not url or not model:
+                return None
+            r = requests.post(
+                f"{url}/chat/completions",
+                headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+                json={"model": model, "messages": [{"role": "user", "content": prompt}], "temperature": 0.2},
+                timeout=60,
             )
-            resp_text = response.text.strip()
-            # Clean markdown codeblocks if returned
-            if resp_text.startswith("```"):
-                resp_text = re.sub(r"^```[a-zA-Z]*\n", "", resp_text)
-                resp_text = re.sub(r"\n```$", "", resp_text).strip()
-
-            parsed = json.loads(resp_text)
-            return parsed
+            r.raise_for_status()
+            return self._parse_json_reply(r.json()["choices"][0]["message"]["content"])
         except Exception:
             return None
+
+    def _generate_with_gemini(self, payload: Dict[str, Any], api_key: str) -> Optional[Dict[str, Any]]:
+        """Kept for backward compatibility with older callers."""
+        return self._generate_with_llm(payload, api_key, "Google Gemini", None, None)
 
     def _generate_local_defenses(self, payload: Dict[str, Any]) -> Dict[str, Any]:
         """Synthesize MITRE mappings, YARA rules, Snort signatures, and iptables locally."""
@@ -149,7 +193,7 @@ class MitreRuleGenerator(BaseMitreRuleGenerator):
             "rule SecOps_AutoML_Detection {\n"
             "    meta:\n"
             '        description = "Automated defense signature generated by SecOps AutoML Engine"\n'
-            '        author = "AegisOps SecOps Engine"\n'
+            '        author = "Adversa SecOps Engine"\n'
             '        severity = "High"\n'
             '        date = "2026-11-06"\n'
             "    strings:\n"

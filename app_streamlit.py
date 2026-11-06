@@ -486,11 +486,17 @@ with tab_ingest:
     if st.session_state.raw_df is not None:
         df_to_process = st.session_state.raw_df.copy()
 
-        if enable_privacy_masking:
-            masked_df, audit = st.session_state.privacy_masker.mask_dataframe(df_to_process)
-            active_df = masked_df
-        else:
-            active_df = df_to_process
+        # Cache masking computation to prevent re-execution on every tab switch
+        mask_cache_key = (id(st.session_state.raw_df), len(st.session_state.raw_df), enable_privacy_masking)
+        if st.session_state.get("_mask_cache_key") != mask_cache_key or "active_df" not in st.session_state:
+            if enable_privacy_masking:
+                masked_df, _ = st.session_state.privacy_masker.mask_dataframe(df_to_process)
+                st.session_state.active_df = masked_df
+            else:
+                st.session_state.active_df = df_to_process
+            st.session_state._mask_cache_key = mask_cache_key
+
+        active_df = st.session_state.active_df
 
         st.markdown("---")
         st.markdown("#### Ingestion status")

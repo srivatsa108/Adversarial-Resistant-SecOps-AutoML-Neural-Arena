@@ -1,4 +1,4 @@
-"""Automated System & Invariant Verification Suite for AegisOps SecOps Platform."""
+"""Automated System & Invariant Verification Suite for Adversa SecOps Platform."""
 
 import time
 from typing import Any, Dict, List
