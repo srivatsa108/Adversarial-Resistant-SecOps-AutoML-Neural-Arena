@@ -404,6 +404,37 @@ li[role="option"]:hover, li[role="option"][aria-selected="true"] { background-co
 """.replace("__VARS__", _vars)
 st.markdown(THEME_CSS, unsafe_allow_html=True)
 
+# Streamlit's native widgets follow its own theme, not this toggle. In light mode,
+# repaint the ones that would otherwise stay dark.
+if active_theme == "light":
+    st.markdown(
+        """
+        <style>
+        .stApp [data-baseweb="select"] > div,
+        .stApp [data-baseweb="select"] div,
+        .stApp [data-baseweb="input"],
+        .stApp [data-baseweb="base-input"],
+        .stApp [data-baseweb="base-input"] input,
+        .stApp textarea {
+            background-color: var(--panel) !important;
+            color: var(--text) !important;
+            -webkit-text-fill-color: var(--text) !important;
+        }
+        .stApp [data-baseweb="select"] svg, .stApp [data-testid="stTooltipIcon"] svg, .stApp [data-baseweb="base-input"] svg { color: var(--muted) !important; fill: var(--muted) !important; }
+        [data-baseweb="popover"] *, ul[role="listbox"] * { background-color: var(--panel); color: var(--text); }
+        [data-baseweb="popover"] li:hover, ul[role="listbox"] li:hover { background-color: var(--raised); }
+        [data-testid="stDataFrame"] canvas, [data-testid="stDataFrame"] iframe { filter: invert(1) hue-rotate(180deg); }
+        .stApp div[role="group"], .stApp [data-testid="stTextInputRootElement"], .stApp [data-testid="stFileChip"],
+        .stApp [data-testid="stFileUploaderDropzone"] { background-color: var(--panel) !important; color: var(--text) !important; border-color: var(--border) !important; }
+        .stApp [data-testid="stFileChip"] *, .stApp [data-testid="stFileUploaderDropzone"] * { color: var(--text) !important; }
+        .stApp [data-testid="stElementToolbarButtonContainer"], .stApp [data-testid="stElementToolbarButtonContainer"] button { background-color: var(--panel) !important; color: var(--text) !important; }
+        .stApp [data-testid="stRadioOption"] > div > div:first-child { background-color: var(--raised) !important; border: 1px solid var(--border-strong, var(--border)) !important; }
+        .stApp [data-testid="stRadioOption"] input:checked ~ div > div:first-child, .stApp [data-testid="stRadioOption"]:has(input:checked) > div > div:first-child { background-color: var(--text) !important; }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
 # Imports from src
 from src.adversarial.tester import AdversarialRobustnessTester
 from src.cleaners.cleaner import DataCleaner
@@ -549,25 +580,35 @@ with tab_ingest:
         else:
             st.warning("Sample dataset not found on disk. Run generate_samples.py first.")
 
-    # File upload handling
+    # File upload handling. Parse only when a new file arrives: Streamlit reruns the
+    # script on every widget change, and re-parsing would wipe the trained results.
     if uploaded_file is not None:
-        try:
-            buffer = io.BytesIO(uploaded_file.read())
-            ext = st.session_state.buffer_validator.validate(
-                buffer=buffer,
-                filename=uploaded_file.name,
-                content_type=uploaded_file.type,
-            )
-            parser = ParserFactory.get_parser(ext)
-            parsed_df = parser.parse(buffer, uploaded_file.name)
-            st.session_state.raw_df = parsed_df
-            st.session_state.cleaned_df = None
-            st.session_state.arena_result = None
-            st.success(f"Parsed '{uploaded_file.name}' ({len(parsed_df)} records) in-memory.")
-        except SecurityValidationError as sve:
-            st.error(f"Security policy violation: {sve}")
-        except Exception as e:
-            st.error(f"Parsing error: {e}")
+        _upload_sig = f"{uploaded_file.name}:{uploaded_file.size}"
+        if st.session_state.get("upload_sig") != _upload_sig:
+            try:
+                buffer = io.BytesIO(uploaded_file.getvalue())
+                ext = st.session_state.buffer_validator.validate(
+                    buffer=buffer,
+                    filename=uploaded_file.name,
+                    content_type=uploaded_file.type,
+                )
+                parser = ParserFactory.get_parser(ext)
+                parsed_df = parser.parse(buffer, uploaded_file.name)
+                st.session_state.raw_df = parsed_df
+                st.session_state.cleaned_df = None
+                st.session_state.cleaning_report = None
+                st.session_state.arena_result = None
+                st.session_state.adv_results = None
+                st.session_state.xai_results = None
+                st.session_state.mitre_results = None
+                st.session_state.upload_sig = _upload_sig
+                st.success(f"Parsed '{uploaded_file.name}' ({len(parsed_df)} records) in-memory.")
+            except SecurityValidationError as sve:
+                st.error(f"Security policy violation: {sve}")
+            except Exception as e:
+                st.error(f"Parsing error: {e}")
+        elif st.session_state.raw_df is not None:
+            st.caption(f"Loaded '{uploaded_file.name}' ({len(st.session_state.raw_df):,} records).")
 
     # Dataset details
     if st.session_state.raw_df is not None:
@@ -724,25 +765,27 @@ with tab_arena:
             )
 
         with cfg_col2:
-            test_split = st.slider(
+            test_split_pct = st.slider(
                 "Evaluation split ratio (test set):",
-                min_value=0.10,
-                max_value=0.40,
-                value=0.20,
-                step=0.05,
+                min_value=10,
+                max_value=40,
+                value=20,
+                step=5,
                 format="%d%%",
             )
+            test_split = test_split_pct / 100
 
         with cfg_col3:
-            contamination_rate = st.slider(
+            contamination_pct = st.slider(
                 "Anomaly quota (contamination):",
-                min_value=0.01,
-                max_value=0.20,
-                value=0.05,
-                step=0.01,
+                min_value=1,
+                max_value=20,
+                value=5,
+                step=1,
                 format="%d%%",
                 help="Proportion of highest-error outliers to tag as zero-day attacks.",
             )
+            contamination_rate = contamination_pct / 100
 
         run_arena_btn = st.button("Run benchmark", use_container_width=True)
 
